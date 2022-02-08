@@ -1,14 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react"
-
+import MapCon from "./Map";
+import { LayerSwitch } from "./LayerSwitch";
 
 export const App = () => {
 
   const [messagesFromExtension, setMessagesFromExtension] = useState<string[]>([])
-  
-  const handleMessagesFromExtension = useCallback((event: MessageEvent<string>) => {
-    console.log(`message From extension: ${event.data}`)
-    setMessagesFromExtension([event.data])
-  }, [messagesFromExtension])
+  const [geojsonData, setGeojsonData] = useState<string>('')
+  let n = 0
+
+  // const handleMessagesFromExtension = useCallback((event: MessageEvent<string>) => {
+  //   console.log(`message From extension: ${event.data}`)
+  //   n++
+  //   console.log(n)
+  //   setMessagesFromExtension([event.data])
+  // }, [messagesFromExtension])
+
+    const handleMessagesFromExtension = (event: MessageEvent<string>) => {
+      // console.log(`message From extension: ${event.data}`)
+      setGeojsonData(event.data)
+    }
 
   useEffect(() => {
     window.addEventListener('message', (event: MessageEvent<string>) => {
@@ -25,11 +35,10 @@ export const App = () => {
     console.log('clicked')
   }
 
-  return (<div>
-    <p>hello world</p>
-
-    <p>{ messagesFromExtension }</p>
-
-    <button onClick={ handleClick }>click</button>
+  return (<div id="app">
+    <MapCon geojson={geojsonData}/>
+    {/* <LayerSwitch/> */}
+    {/* <p>{ messagesFromExtension }</p> */}
+    {/* <button onClick={ handleClick }>click</button> */}
   </div>)
 }

@@ -1,3 +1,4 @@
+import { readFile } from 'fs'
 import * as vscode from 'vscode'
 import { ViewLoader } from './view/ViewLoader'
 
@@ -9,13 +10,22 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable)
 
-	let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.openWebview', () => {
+	let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.openWebview', (uri) => {
 		ViewLoader.showWebview(context)
-		ViewLoader.postMessageToWebview('x fgggg')
-
+		if(uri.path) {
+			readFile(uri._fsPath, (err, data) => {
+				// console.log(555, data.toString())
+				ViewLoader.postMessageToWebview(data.toString())
+			})
+		}
 	})
-
 	context.subscriptions.push(openWebview)
+
+	context.subscriptions.push(
+		vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
+			ViewLoader.postMessageToWebview(document.getText())
+		})
+	)
 }
 
 export function deactivate() {}
