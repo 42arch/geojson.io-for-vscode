@@ -11,6 +11,8 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
   const map = useRef<Map | null>(null)
   const [zoom, setZoom] = useState(9)
 
+  ImageBitmap
+
   console.log(666, geojson)
 
   useEffect(() => {

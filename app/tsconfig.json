@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "target": "ES2020",
+    "strict": true,
+    "module": "commonjs",
+    "types": ["node"],
     "jsx": "react",
+    "esModuleInterop": true,
     "sourceMap": true,
-    "experimentalDecorators": true,
-    "lib": ["dom", "ES2020"],
-    "strict": true
+    "allowJs": true,
+    "lib": [
+      "ES6",
+      "DOM"
+    ],
+    "rootDir": "./",
+    "moduleResolution": "node"
   }
 }
