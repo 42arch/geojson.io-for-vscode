@@ -3,7 +3,7 @@
 	"name": "geojson-io-for-vscode",
 	"displayName": "geojson.io for vscode",
 	"description": "",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"engines": {
 		"vscode": "^1.63.0"
 	},
@@ -72,6 +72,7 @@
 		"webpack-cli": "^4.9.1"
 	},
 	"dependencies": {
+		"@turf/bbox": "^6.5.0",
 		"mapbox-gl": "^2.7.0",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"

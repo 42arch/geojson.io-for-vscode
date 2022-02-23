@@ -6,7 +6,6 @@ export const App = () => {
 
   const [messagesFromExtension, setMessagesFromExtension] = useState<string[]>([])
   const [geojsonData, setGeojsonData] = useState<string>('')
-  let n = 0
 
   // const handleMessagesFromExtension = useCallback((event: MessageEvent<string>) => {
   //   console.log(`message From extension: ${event.data}`)
@@ -16,7 +15,7 @@ export const App = () => {
   // }, [messagesFromExtension])
 
     const handleMessagesFromExtension = (event: MessageEvent<string>) => {
-      // console.log(`message From extension: ${event.data}`)
+      console.log(`message From extension: ${event.data}`)
       setGeojsonData(event.data)
     }
 
@@ -24,7 +23,6 @@ export const App = () => {
     window.addEventListener('message', (event: MessageEvent<string>) => {
       handleMessagesFromExtension(event)
     })
-
     return () => {
       window.removeEventListener('message', handleMessagesFromExtension)
     }

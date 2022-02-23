@@ -14,8 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
 		ViewLoader.showWebview(context)
 		if(uri.path) {
 			readFile(uri._fsPath, (err, data) => {
-				// console.log(555, data.toString())
-				ViewLoader.postMessageToWebview(data.toString())
+				const dataStr = data.toString()
+				ViewLoader.postMessageToWebview(dataStr)
 			})
 		}
 	})
