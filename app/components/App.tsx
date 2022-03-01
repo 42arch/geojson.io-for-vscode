@@ -15,7 +15,7 @@ export const App = () => {
   // }, [messagesFromExtension])
 
     const handleMessagesFromExtension = (event: MessageEvent<string>) => {
-      console.log(`message From extension: ${event.data}`)
+      console.log(`message From extension: ${event}`)
       setGeojsonData(event.data)
     }
 

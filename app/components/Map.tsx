@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
 import mapboxgl, { Map, GeoJSONSource, LngLatBoundsLike } from "mapbox-gl"
 import getBbox from "@turf/bbox"
-
 interface IProps {
   geojson: string
 }
@@ -12,13 +11,15 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
   const map = useRef<Map | null>(null)
   const [zoom, setZoom] = useState(9)
 
-
-  // console.log(666, geojson)
-  map.current?.on('load', () => {
-    addGeojsonLayer(geojson)
-  })
-
   useEffect(() => {
+    if(!map.current?.isStyleLoaded()) {
+      map.current?.on('load', () => {
+        addGeojsonLayer(geojson)
+      })
+    } else {
+      addGeojsonLayer(geojson)
+    }
+
     mapboxgl.accessToken = 'pk.eyJ1IjoiaW5nZW40MiIsImEiOiJjazlsMnliMXoyMWoxM2tudm1hajRmaHZ6In0.rWx_wAz2cAeMIzxQQfPDPA'
     if(map.current) {
       return
@@ -32,9 +33,16 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
       zoom: zoom
     })
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-left')
-  })
+
+  }, [geojson])
 
   function addGeojsonLayer(geojson: string) {
+    const haveSource = map.current?.getSource('geojson')
+    const haveLayer = map.current?.getLayer('geojson-layer')
+
+    haveLayer && map.current?.removeLayer('geojson-layer')
+    haveSource && map.current?.removeSource('geojson')
+
     if(!geojson) {
       return
     }
@@ -57,7 +65,6 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
     })
     map.current?.fitBounds(bounds)
   }
-
 
   return (
     <div ref={ mapContainer } className="map-container">
