@@ -1,9 +1,14 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
-import mapboxgl, { Map, GeoJSONSource, LngLatBoundsLike } from "mapbox-gl"
+import mapboxgl, { Map, GeoJSONSource, LngLatBoundsLike, FillLayer, CircleLayer, LineLayer } from "mapbox-gl"
 import getBbox from "@turf/bbox"
 interface IProps {
   geojson: string
 }
+
+const SOURCE_NAME = 'geojson-data'
+const POLYGON_LAYE_RNAME = 'fill-layer'
+const POLYLINE_LAYER_NAME = 'line-layer'
+const POINT_LAYER_NAME = 'circle-layer'
 
 const MapCon: FunctionComponent<IProps> = ({geojson}) => {
 
@@ -37,11 +42,49 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
   }, [geojson])
 
   function addGeojsonLayer(geojson: string) {
-    const haveSource = map.current?.getSource('geojson')
-    const haveLayer = map.current?.getLayer('geojson-layer')
 
-    haveLayer && map.current?.removeLayer('geojson-layer')
-    haveSource && map.current?.removeSource('geojson')
+    map.current?.getLayer(POLYGON_LAYE_RNAME) && map.current?.removeLayer(POLYGON_LAYE_RNAME)
+    map.current?.getLayer(POLYLINE_LAYER_NAME) && map.current?.removeLayer(POLYLINE_LAYER_NAME)
+    map.current?.getLayer(POINT_LAYER_NAME) && map.current?.removeLayer(POINT_LAYER_NAME)
+    if(map.current?.getSource(SOURCE_NAME)) {
+      map.current?.removeSource(SOURCE_NAME)
+    } 
+
+    const polygonLayer: FillLayer = {
+      id: POLYGON_LAYE_RNAME,
+      type: 'fill',
+      source: SOURCE_NAME,
+      layout: {},
+      paint: {
+        'fill-color': '#0080ff',
+        'fill-opacity': 0.7
+      },
+      filter: ['==', '$type', 'Polygon']
+    }
+
+    const polylineLayer: LineLayer = {
+      id: POLYLINE_LAYER_NAME,
+      type: 'line',
+      source: SOURCE_NAME,
+      paint: {
+        'line-color': '#0080ff',
+        'line-opacity': 0.7,
+        'line-width': 2.5
+      },
+      filter: ['==', '$type', 'LineString']
+    }
+
+    const pointLayer: CircleLayer = {
+      id: POINT_LAYER_NAME,
+      type: 'circle',
+      source: SOURCE_NAME,
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#0080ff',
+        "circle-opacity": 0.7
+      },
+      filter: ['==', '$type', 'Point']
+    }
 
     if(!geojson) {
       return
@@ -49,20 +92,13 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
     const geojsonObj = JSON.parse(geojson)
     const [minX, minY, maxX, maxY] = getBbox(geojsonObj)
     const bounds: LngLatBoundsLike = [[minX, minY], [maxX, maxY]]
-    map.current?.addSource('geojson', {
+    map.current?.addSource(SOURCE_NAME, {
       type: 'geojson',
       data: geojsonObj
     })
-    map.current?.addLayer({
-      'id': 'geojson-layer',
-      'type': 'fill',
-      source: 'geojson',
-      layout: {},
-      paint: {
-        'fill-color': '#0080ff',
-        'fill-opacity': 0.7
-      }
-    })
+    map.current?.addLayer(polygonLayer)
+    map.current?.addLayer(pointLayer)
+    map.current?.addLayer(polylineLayer)
     map.current?.fitBounds(bounds)
   }
 
