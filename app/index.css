@@ -15,7 +15,15 @@ html, body {
   height: 100%;
 }
 
-.map-container {
+.map {
   height: 100%;
   width: 100%;
+}
+
+.leaflet-editing-icon {
+  margin-left: -5px !important;
+  margin-top: -5px !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50%;
 }

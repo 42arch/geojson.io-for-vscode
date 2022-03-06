@@ -12,7 +12,7 @@ export class ViewLoader {
     this.context = context
     this.disposables = []
 
-    this.panel = vscode.window.createWebviewPanel('mapApp', 'Map APP', vscode.ViewColumn.Beside, {
+    this.panel = vscode.window.createWebviewPanel('mapApp', 'Map View', vscode.ViewColumn.Beside, {
       enableScripts: true,
       retainContextWhenHidden: true,
       localResourceRoots: [vscode.Uri.file(path.join(this.context.extensionPath, 'out', 'app'))]
@@ -21,12 +21,32 @@ export class ViewLoader {
     this.renderWebview()
 
     this.panel.webview.onDidReceiveMessage((message: string) => {
-      console.log(`message from webview: ${ message }`)
+      this.replaceTextContent(message)
     }, null, this.disposables)
 
     this.panel.onDidDispose(() => {
       this.dispose()
     }, null, this.disposables)
+  }
+
+  private replaceTextContent(textContent: string) {
+    const textEditor = vscode.window.visibleTextEditors[0]
+    if(!textEditor) {
+      return
+    }
+    const firstLine = textEditor.document.lineAt(0)
+    const lastLine = textEditor.document.lineAt(textEditor.document.lineCount - 1)
+    const textRange = new vscode.Range(
+      0, firstLine.range.start.character, textEditor.document.lineCount-1, lastLine.range.end.character
+    )
+
+    textEditor.edit((editBuilder) => {
+      editBuilder.replace(textRange, this.formatJSONString(textContent))
+    })
+  }
+
+  private formatJSONString(textContent: string) {
+    return JSON.stringify(JSON.parse(textContent), null, 2)
   }
 
   private renderWebview() {
@@ -70,7 +90,7 @@ export class ViewLoader {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>React App</title>
+          <title>Map App</title>
         </head>
 
         <body>

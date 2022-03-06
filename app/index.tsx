@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import 'mapbox-gl/dist/mapbox-gl.css'
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-draw/dist/leaflet.draw.css'
 import "./index.css"
 import { App } from "./components/App"
 
 ReactDOM.render(
-    <App/>,
-  document.getElementById('root'))
+  <App/>,
+  document.getElementById('root')
+)

@@ -1,121 +1,133 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react"
-import mapboxgl, { Map, LngLatBoundsLike, FillLayer, CircleLayer, LineLayer } from "mapbox-gl"
-import MapBoxDraw from "@mapbox/mapbox-gl-draw"
+import React, { FunctionComponent, useEffect, useRef } from "react"
+import * as L from "leaflet"
+import 'leaflet-draw'
+import { Layer, FeatureGroup, Map, GeoJSON } from "leaflet"
 import getBbox from "@turf/bbox"
 interface IProps {
   geojson: string
 }
 
-const SOURCE_NAME = 'geojson-data'
-const POLYGON_LAYER_NAME = 'fill-layer'
-const POLYLINE_LAYER_NAME = 'line-layer'
-const POINT_LAYER_NAME = 'circle-layer'
-
-const MapCon: FunctionComponent<IProps> = ({geojson}) => {
-
-  const mapContainer = useRef<HTMLDivElement>(null)
+const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   const map = useRef<Map | null>(null)
-  const [zoom, setZoom] = useState(9)
+  const geojsonLayer = useRef<GeoJSON | null>(null)
+  const editLayer = useRef<FeatureGroup>(new L.FeatureGroup())
+  const pointIcon = L.icon({
+    iconUrl: 'https://a.tiles.mapbox.com/v4/marker/pin-m+7e7e7e.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A',
+    iconSize: [15, 35],
+    // iconAnchor: [22, 94],
+    // popupAnchor: [-3, -76]
+  })
 
   useEffect(() => {
-    if(!map.current?.isStyleLoaded()) {
-      map.current?.on('load', () => {
-        addGeojsonLayer(geojson)
-      })
-    } else {
-      addGeojsonLayer(geojson)
+    if(geojson) {
+      createGeoJSONLayer(geojson)
     }
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoiaW5nZW40MiIsImEiOiJjazlsMnliMXoyMWoxM2tudm1hajRmaHZ6In0.rWx_wAz2cAeMIzxQQfPDPA'
     if(map.current) {
       return
-    } 
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current || '',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-70.9, 42.3],
-      attributionControl: false,
-      zoom: zoom
-    })
-    const draw = new MapBoxDraw({
-      displayControlsDefault: true,
-      controls: {
-        polygon: true,
-        line_string: true,
-        point: true,
-        trash: true
+    }
+    map.current = L.map('map')
+    map.current.setView([45, 120], 7)
+    L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A`, {
+      accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A'
+    }).addTo(map.current)
+
+    const option: L.Control.DrawConstructorOptions = {
+      position: 'topright',
+      draw: {
+        circle: false,
+        circlemarker: false,
+        polyline: {
+          shapeOptions: {
+            color: '#555555', opacity: 1
+          }
+        },
+        polygon: {
+          allowIntersection: false,
+          drawError: {
+            color: '#e1e100',
+            message: '<strong>Oh snap!<strong> you can\'t draw that!'
+          },
+          shapeOptions: {
+            fillColor: '#555555', fillOpacity: 0.5, stroke: true, color: '#555555', opacity: 1, weight: 2
+          }
+        },
+        marker: {
+          icon: pointIcon
+        },
+        rectangle: {
+          shapeOptions: {
+            fillColor: '#555555', fillOpacity: 0.5, stroke: true, color: '#555555', opacity: 1, weight: 2
+          }
+        }
       },
-      defaultMode: 'draw_polygon'
+      edit: {
+        featureGroup: editLayer.current, //REQUIRED!!
+        remove: true
+      }
+    }
+    const drawControl = new L.Control.Draw(option)
+    map.current && map.current.addControl(drawControl)
+
+    map.current.on('draw:created', (e) => {
+      editLayer.current.addLayer(e.layer)
+      const curGeoJSONData = editLayer.current.toGeoJSON()
+      vscode.postMessage(JSON.stringify(curGeoJSONData))
     })
 
-    // map.current.addControl(draw)
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-left')
+    map.current.on('draw:edited', (e) => {
+      const curGeoJSONData = editLayer.current.toGeoJSON()
+      vscode.postMessage(JSON.stringify(curGeoJSONData))
+    })
+
+    map.current.on('draw:deleted', (e) => {
+      const curGeoJSONData = editLayer.current.toGeoJSON()
+      vscode.postMessage(JSON.stringify(curGeoJSONData))
+    })
 
   }, [geojson])
 
-  function addGeojsonLayer(geojson: string) {
-    map.current?.getLayer(POLYGON_LAYER_NAME) && map.current?.removeLayer(POLYGON_LAYER_NAME)
-    map.current?.getLayer(POLYLINE_LAYER_NAME) && map.current?.removeLayer(POLYLINE_LAYER_NAME)
-    map.current?.getLayer(POINT_LAYER_NAME) && map.current?.removeLayer(POINT_LAYER_NAME)
-    if(map.current?.getSource(SOURCE_NAME)) {
-      map.current?.removeSource(SOURCE_NAME)
-    } 
 
-    const polygonLayer: FillLayer = {
-      id: POLYGON_LAYER_NAME,
-      type: 'fill',
-      source: SOURCE_NAME,
-      layout: {},
-      paint: {
-        'fill-color': '#0080ff',
-        'fill-opacity': 0.7
+  function createGeoJSONLayer(geojsonStr: string) {
+    if(editLayer.current) {
+      map.current?.removeLayer(editLayer.current)
+      editLayer.current.clearLayers()
+    }
+    const geojsonData = JSON.parse(geojsonStr)
+    const [minX, minY, maxX, maxY] = getBbox(geojsonData)
+    let bounds = L.latLngBounds(L.latLng(minY, minX), L.latLng(maxY, maxX))
+    map.current && map.current.flyToBounds(bounds)
+
+    geojsonLayer.current = L.geoJSON(geojsonData, {
+      style: function(feature) {
+        switch (feature?.geometry.type) {
+          case 'Polygon':
+          case 'MultiPolygon':
+            return { fillColor: '#555555', fillOpacity: 0.5, stroke: true, color: '#555555', weight: 2 }
+          case 'LineString':
+          case 'MultiLineString':
+            return { color: '#555555', weight: 2 }
+          case 'Point':
+          case 'MultiPoint':
+            return { }
+          default:
+            return { }
+        }
       },
-      filter: ['==', '$type', 'Polygon']
-    }
-
-    const polylineLayer: LineLayer = {
-      id: POLYLINE_LAYER_NAME,
-      type: 'line',
-      source: SOURCE_NAME,
-      paint: {
-        'line-color': '#0080ff',
-        'line-opacity': 0.7,
-        'line-width': 2.5
+      pointToLayer: function(geoJsonPoint, latlng) {
+        return L.marker(latlng, {
+          icon: pointIcon
+        })
       },
-      filter: ['==', '$type', 'LineString']
-    }
-
-    const pointLayer: CircleLayer = {
-      id: POINT_LAYER_NAME,
-      type: 'circle',
-      source: SOURCE_NAME,
-      paint: {
-        'circle-radius': 6,
-        'circle-color': '#0080ff',
-        "circle-opacity": 0.7
-      },
-      filter: ['==', '$type', 'Point']
-    }
-
-    if(!geojson) {
-      return
-    }
-    const geojsonObj = JSON.parse(geojson)
-    const [minX, minY, maxX, maxY] = getBbox(geojsonObj)
-    const bounds: LngLatBoundsLike = [[minX, minY], [maxX, maxY]]
-    map.current?.addSource(SOURCE_NAME, {
-      type: 'geojson',
-      data: geojsonObj
+      onEachFeature: function(feature, layer) {
+        editLayer.current.addLayer(layer)
+      }
     })
-    map.current?.addLayer(polygonLayer)
-    map.current?.addLayer(pointLayer)
-    map.current?.addLayer(polylineLayer)
-    map.current?.fitBounds(bounds)
+    map.current?.addLayer(editLayer.current)
   }
 
   return (
-    <div ref={ mapContainer } className="map-container">
+    <div id="map" className="map">
     </div>
   )
 }
