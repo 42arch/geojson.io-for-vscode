@@ -6,8 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Initial release
+- Initial release.
 
 ## [0.0.4]
 
 - It can re-render the layer when data saved.
+
+## [0.1.0]
+
+- Refactor the map with leaflet.js.
+- The geometries in the map can be edited or delelted now.
+- Add README doc.
