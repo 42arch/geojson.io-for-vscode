@@ -1,12 +1,13 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
-import mapboxgl, { Map, GeoJSONSource, LngLatBoundsLike, FillLayer, CircleLayer, LineLayer } from "mapbox-gl"
+import mapboxgl, { Map, LngLatBoundsLike, FillLayer, CircleLayer, LineLayer } from "mapbox-gl"
+import MapBoxDraw from "@mapbox/mapbox-gl-draw"
 import getBbox from "@turf/bbox"
 interface IProps {
   geojson: string
 }
 
 const SOURCE_NAME = 'geojson-data'
-const POLYGON_LAYE_RNAME = 'fill-layer'
+const POLYGON_LAYER_NAME = 'fill-layer'
 const POLYLINE_LAYER_NAME = 'line-layer'
 const POINT_LAYER_NAME = 'circle-layer'
 
@@ -37,13 +38,24 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
       attributionControl: false,
       zoom: zoom
     })
+    const draw = new MapBoxDraw({
+      displayControlsDefault: true,
+      controls: {
+        polygon: true,
+        line_string: true,
+        point: true,
+        trash: true
+      },
+      defaultMode: 'draw_polygon'
+    })
+
+    // map.current.addControl(draw)
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-left')
 
   }, [geojson])
 
   function addGeojsonLayer(geojson: string) {
-
-    map.current?.getLayer(POLYGON_LAYE_RNAME) && map.current?.removeLayer(POLYGON_LAYE_RNAME)
+    map.current?.getLayer(POLYGON_LAYER_NAME) && map.current?.removeLayer(POLYGON_LAYER_NAME)
     map.current?.getLayer(POLYLINE_LAYER_NAME) && map.current?.removeLayer(POLYLINE_LAYER_NAME)
     map.current?.getLayer(POINT_LAYER_NAME) && map.current?.removeLayer(POINT_LAYER_NAME)
     if(map.current?.getSource(SOURCE_NAME)) {
@@ -51,7 +63,7 @@ const MapCon: FunctionComponent<IProps> = ({geojson}) => {
     } 
 
     const polygonLayer: FillLayer = {
-      id: POLYGON_LAYE_RNAME,
+      id: POLYGON_LAYER_NAME,
       type: 'fill',
       source: SOURCE_NAME,
       layout: {},
