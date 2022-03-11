@@ -2,7 +2,7 @@
 
 ## what it is?
 
-`geojson.io for vscode` is a Visual Studio Code extentsion that allows you to dipreview, create and edit your geojson data by the way of map visualization。 🗺
+`geojson.io for vscode` is a Visual Studio Code extentsion that allows you to preview, create and edit your geojson data by the way of map visualization。 🗺
 
 ## how to use?
 
