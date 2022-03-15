@@ -1,12 +1,13 @@
 {
-	"publisher": "RenDan",
+	"publisher": "swallow",
 	"name": "geojson-io-for-vscode",
-	"displayName": "geojson.io for vscode",
+	"displayName": "GeoJSON.IO for VSCode",
 	"description": "Preview, Edit and Create GeoJSON Data In VSCode",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"engines": {
 		"vscode": "^1.63.0"
 	},
+	"icon": "images/icon.png",
 	"repository": "https://github.com/rend42/geojson.io-for-vscode.git",
 	"categories": [
 		"Other", "Data Science", "Visualization"
