@@ -17,3 +17,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Refactor the map with leaflet.js.
 - The geometries in the map can be edited or delelted now.
 - Add README doc.
+
+## [0.1.5]
+
+- Support plain text and empty data.
+- Update README.md
