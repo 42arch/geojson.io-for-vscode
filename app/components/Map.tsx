@@ -14,8 +14,6 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   const pointIcon = L.icon({
     iconUrl: 'https://a.tiles.mapbox.com/v4/marker/pin-m+7e7e7e.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A',
     iconSize: [15, 35],
-    // iconAnchor: [22, 94],
-    // popupAnchor: [-3, -76]
   })
 
   useEffect(() => {
@@ -95,8 +93,10 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
     }
     const geojsonData = JSON.parse(geojsonStr)
     const [minX, minY, maxX, maxY] = getBbox(geojsonData)
-    let bounds = L.latLngBounds(L.latLng(minY, minX), L.latLng(maxY, maxX))
-    map.current && map.current.flyToBounds(bounds)
+    if(![minX, minY, maxX, maxY].includes(Infinity) || ![minX, minY, maxX, maxY].includes(-Infinity)) {
+      let bounds = L.latLngBounds(L.latLng(minY, minX), L.latLng(maxY, maxX))
+      map.current && map.current.flyToBounds(bounds)
+    }
 
     geojsonLayer.current = L.geoJSON(geojsonData, {
       style: function(feature) {

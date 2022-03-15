@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable)
 
-	let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.openWebview', (uri) => {
+	let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.openMap', (uri) => {
 		ViewLoader.showWebview(context)
 		if(uri.path) {
 			readFile(uri._fsPath, (err, data) => {

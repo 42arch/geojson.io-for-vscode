@@ -2,36 +2,36 @@
 	"publisher": "RenDan",
 	"name": "geojson-io-for-vscode",
 	"displayName": "geojson.io for vscode",
-	"description": "",
-	"version": "0.1.0",
+	"description": "Preview, Edit and Create GeoJSON Data In VSCode",
+	"version": "0.1.5",
 	"engines": {
 		"vscode": "^1.63.0"
 	},
 	"repository": "https://github.com/rend42/geojson.io-for-vscode.git",
 	"categories": [
-		"Other"
+		"Other", "Data Science", "Visualization"
 	],
 	"activationEvents": [
-		"onCommand:geojson-io-for-vscode.helloWorld",
-		"onCommand:geojson-io-for-vscode.openWebview"
+		"onCommand:geojson-io-for-vscode.openMap"
 	],
 	"main": "./out/src/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "geojson-io-for-vscode.helloWorld",
-				"title": "Hello World"
-			},
-			{
-				"command": "geojson-io-for-vscode.openWebview",
-				"title": "Open In Map"
+				"command": "geojson-io-for-vscode.openMap",
+				"title": "View In Map"
 			}
 		],
 		"menus": {
 			"editor/context": [
 				{
-					"when": "editorFocus && resourceExtname == .json",
-					"command": "geojson-io-for-vscode.openWebview",
+					"when": "editorFocus && resourceExtname== '.json'",
+					"command": "geojson-io-for-vscode.openMap",
+					"group": "navigation"
+				},
+				{
+					"when": "editorFocus && resourceExtname== '.txt'",
+					"command": "geojson-io-for-vscode.openMap",
 					"group": "navigation"
 				}
 			]
