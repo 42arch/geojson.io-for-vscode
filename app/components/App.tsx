@@ -32,7 +32,5 @@ export const App: FunctionComponent = () => {
   return (<div id="app">
     <MapCon geojson={geojsonData}/>
     {/* <LayerSwitch/> */}
-    {/* <p>{ messagesFromExtension }</p> */}
-    {/* <button onClick={ handleClick }>click</button> */}
   </div>)
 }

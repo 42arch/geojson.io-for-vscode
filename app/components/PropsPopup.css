@@ -1,0 +1,35 @@
+.props-popup {
+	min-width: 100px;
+	min-height: 140px;
+	z-index: 999;
+}
+
+.props-popup input {
+	width: 120px;
+}
+.props-popup select {
+	width: 120px;
+}
+
+.props-popup .btns {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	margin-top: 10px;
+	height: 32px;
+}
+.props-popup .btns button {
+	height: 28px;
+	font-size: 14px;
+	cursor: pointer;
+	border: 0;
+	border-radius: 3px;
+	background-color: #59AAE7;
+	color: #545454;
+	font-weight: 500;
+}
+
+.props-popup .btns button:hover {
+	background-color: #006EA7;
+	color: #ffffff;
+}
