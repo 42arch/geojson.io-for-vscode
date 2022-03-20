@@ -20,10 +20,20 @@ html, body {
   width: 100%;
 }
 
+/* leaflet style */
+
 .leaflet-editing-icon {
   margin-left: -5px !important;
   margin-top: -5px !important;
   width: 10px !important;
   height: 10px !important;
   border-radius: 50%;
+}
+
+/* leaflet popup style */
+.leaflet-popup-content {
+  margin: 18px 10px 5px 10px;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 2px;
 }

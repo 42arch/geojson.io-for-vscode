@@ -10,7 +10,9 @@
 	"icon": "images/icon.png",
 	"repository": "https://github.com/rend42/geojson.io-for-vscode.git",
 	"categories": [
-		"Other", "Data Science", "Visualization"
+		"Other",
+		"Data Science",
+		"Visualization"
 	],
 	"activationEvents": [
 		"onCommand:geojson-io-for-vscode.openMap"
@@ -51,6 +53,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
+		"@types/geojson": "^7946.0.8",
 		"@types/glob": "^7.2.0",
 		"@types/leaflet": "^1.7.9",
 		"@types/leaflet-draw": "^1.0.5",
