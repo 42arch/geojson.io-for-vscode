@@ -21,4 +21,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         # cache: 'npm'
     - run: yarn
-    - run: yarn compile --if-present
+    - run: yarn compile
