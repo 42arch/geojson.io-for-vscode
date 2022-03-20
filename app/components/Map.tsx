@@ -37,7 +37,8 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   const geojsonLayer = useRef<GeoJSON | null>(null)
   const editLayer = useRef<FeatureGroup>(new L.FeatureGroup())
   const pointIcon = L.icon({
-    iconUrl: `${assetUrl}/pin-m+7e7e7e.png?access_token=${accessToken}`
+    iconUrl: `${assetUrl}/pin-m+7e7e7e.png?access_token=${accessToken}`,
+    // iconSize: [15, 35],
   })
 
   useEffect(() => {
