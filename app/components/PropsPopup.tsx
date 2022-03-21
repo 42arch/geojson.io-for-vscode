@@ -1,5 +1,5 @@
 import { GeoJsonGeometryTypes, GeoJsonProperties } from "geojson"
-import React, { FunctionComponent } from "react"
+import React, { FunctionComponent, useEffect, useState } from "react"
 import './PropsPopup.css'
 
 interface IPorps {
@@ -7,16 +7,6 @@ interface IPorps {
 	properties: GeoJsonProperties,
 	updateFeature: (properties: GeoJsonProperties) => void,
 	cancel: () => void
-}
-
-enum MarkerSymbol {
-	default = '',
-	circle = 'circle',
-	circleStroked = 'circle-stroked',
-	square = 'square',
-	squareStroked = 'square-stroked',
-	star = 'star',
-	starStroked = 'star-stroked'
 }
 
 const SYMBOLLIST = [
@@ -103,17 +93,60 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, updateFeature
 		}
 	}
 
+	const [styleShow, setStyleShow] = useState(true)
+	const [hiddenProps, setHiddenProps] = useState([''])
+
+	const handleStyleCheck = (show: boolean) => {
+		const styleProps = ['marker-color', 'stroke', 'fill', 'stroke-width', 'stroke-opacity', 'fill-opacity', 'marker-size', 'marker-symbol']
+		setStyleShow(!styleShow)
+		if(show) {
+			setHiddenProps([''])
+		} else {
+			setHiddenProps(styleProps)
+		}
+	}
+
+	const [newRowList, setNewRowList] = useState<Array<{key: string, value: any}>>([])
+	const addNewRow = () => {
+		setNewRowList([...newRowList, { key: '', value: null }])
+	}
+	const handleNewRowValueChange = (idx: number, key: string, value: any) => {
+		const row = newRowList[idx]
+		if(value) {
+			row.value = value
+		}
+		if(key) {
+			row.key = key
+		}
+		newRowList.splice(idx, 1, row)
+	}
+
+	useEffect(() => {
+		console.log('rowlist update', newRowList)
+	}, [newRowList])
+
+	const beforeUpdate = (props: GeoJsonProperties, newPropsList: Array<{key: string, value: any}>) => {
+		newPropsList.forEach(item => {
+			const newProp: GeoJsonProperties = {}
+			newProp[item.key] = item.value
+			if(item.key) {
+				Object.assign(props, newProp)
+			}
+		})
+		updateFeature(props)
+	}
+
 	return (
 		<div className="props-popup">
 			<div className="props-info">
-				<table>
+				<table className="props-table">
 					<tbody>
 						{
-							props && Object.keys(props).map(key => {
+							props && Object.keys(props).filter(key => (!hiddenProps.includes(key))).map(key => {
 								return (
 									<tr className="item-row" key={key}>
 										<th>
-											<input type="text" defaultValue={key} disabled />
+											<input type="text" defaultValue={key} />
 										</th>
 										<td>
 											<PropInput keyStr={key} value={props[key]} update={(keyStr: string, value: any) => handleValueChange(keyStr, value)} />
@@ -122,12 +155,36 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, updateFeature
 								)
 							})
 						}
+						{
+							newRowList.map((row, idx) => {
+								return (
+									<tr className="item-row" key={idx}>
+									<th>
+										<input type="text" defaultValue={row.key} onChange={(e) => { handleNewRowValueChange(idx, e.target.value, row.value) }}/>
+									</th>
+									<td>
+										<input type="text" defaultValue={row.key} onChange={(e) => { handleNewRowValueChange(idx, row.key, e.target.value) }}/>
+										{/* <PropInput keyStr={row.key} value={row.value} update={(keyStr: string, value: any) => handleNewRowValueChange(idx, keyStr, value)} /> */}
+									</td>
+								</tr>
+								)
+							})
+						}
 					</tbody>
 				</table>
+				<div className="opt">
+					<div id="add-row">
+						<span onClick={addNewRow}>Add row</span>
+					</div>
+					<div id="show-style-props">
+						<input type="checkbox" name="show-style" id="show-style" checked={styleShow} onChange={(e) => { handleStyleCheck(e.target.checked) }}/>
+						<label htmlFor="show-style">Show style properties</label>
+					</div>
+				</div>
 			</div>
 
 			<div className="btns">
-				<button id="save-btn" onClick={(e) => { updateFeature(props) }}>Save</button>
+				<button id="save-btn" onClick={(e) => { beforeUpdate(props, newRowList) }}>Save</button>
 				{/* <button id="cancel-btn" onClick={() => { cancel() }}>Cancel</button> */}
 			</div>
 		</div>
