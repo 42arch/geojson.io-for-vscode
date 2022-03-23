@@ -11,13 +11,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 16
     - name: Publish VS Code Extension
-      # You may pin to the exact commit or the version.
-      # uses: HaaLeo/publish-vscode-extension@902eb321198b63b0ed8e189b5a813023e93ca899
+    - run: npm ci
+    - name: Publish to Visual Studio Marketplace
       uses: HaaLeo/publish-vscode-extension@v1
       with:
         # Personal access token
         pat: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+        registryUrl: https://marketplace.visualstudio.com
         # Path to the vsix file to be published. Cannot be used together with packagePath.
         # extensionFile: # optional
         # Use the registry API at this base URL
