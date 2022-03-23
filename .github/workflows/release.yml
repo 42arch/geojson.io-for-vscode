@@ -1,0 +1,38 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Publish VS Code Extension
+      # You may pin to the exact commit or the version.
+      # uses: HaaLeo/publish-vscode-extension@902eb321198b63b0ed8e189b5a813023e93ca899
+      uses: HaaLeo/publish-vscode-extension@v1
+      with:
+        # Personal access token
+        pat: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+        # Path to the vsix file to be published. Cannot be used together with packagePath.
+        # extensionFile: # optional
+        # Use the registry API at this base URL
+        # registryUrl: # optional, default is https://open-vsx.org
+        # Path to the extension to be packaged and published. Cannot be used together with extensionFile.
+        # packagePath: # optional, default is ./
+        # Prepend all relative links in README.md with this URL.
+        # baseContentUrl: # optional
+        # Prepend all relative image links in README.md with this URL.
+        # baseImagesUrl: # optional
+        # Use yarn instead of npm while packing extension files.
+        yarn: "true" # optional
+        # Set this option to "true" to package your extension but do not publish it.
+        # dryRun: # optional
+        # Allow publishing extensions to the visual studio marketplace which use a proposed API (enableProposedApi: true).
+        # noVerify: # optional
+        # Publish a version marked as a Pre-Release.
+        # preRelease: # optional
