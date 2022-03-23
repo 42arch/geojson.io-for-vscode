@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useRef } from "react"
 import * as L from "leaflet"
 import 'leaflet-draw'
-import { Layer, FeatureGroup, Map, GeoJSON } from "leaflet"
+import { FeatureGroup, Map, GeoJSON } from "leaflet"
 import getBbox from "@turf/bbox"
 import PropsPopup from "./PropsPopup"
 import { Feature, GeoJsonProperties } from "geojson"
@@ -176,7 +176,6 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
 
   const updateFeature = (feature: Feature, properties: GeoJsonProperties) => {
     feature.properties = properties
-    // console.log('feature updated', feature)
     const curGeoJSONData = editLayer.current.toGeoJSON()
     createGeoJSONLayer(JSON.stringify(curGeoJSONData))
     vscode.postMessage(JSON.stringify(curGeoJSONData))

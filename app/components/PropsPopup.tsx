@@ -121,9 +121,9 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, updateFeature
 		newRowList.splice(idx, 1, row)
 	}
 
-	useEffect(() => {
-		console.log('rowlist update', newRowList)
-	}, [newRowList])
+	// useEffect(() => {
+	// 	console.log('rowlist update', newRowList)
+	// }, [newRowList])
 
 	const beforeUpdate = (props: GeoJsonProperties, newPropsList: Array<{key: string, value: any}>) => {
 		newPropsList.forEach(item => {
@@ -174,7 +174,7 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, updateFeature
 				</table>
 				<div className="opt">
 					<div id="add-row">
-						<span onClick={addNewRow}>Add row</span>
+						<span onClick={addNewRow}> <span style={ {fontSize: '18px', fontWeight: 800 }}> + </span>Add row</span>
 					</div>
 					<div id="show-style-props">
 						<input type="checkbox" name="show-style" id="show-style" checked={styleShow} onChange={(e) => { handleStyleCheck(e.target.checked) }}/>
