@@ -22,3 +22,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Support plain text and empty data.
 - Update README.md
+
+## [0.2.0]
+
+- Support editing feature properties!
