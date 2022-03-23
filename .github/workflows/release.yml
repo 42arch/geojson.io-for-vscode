@@ -1,11 +1,11 @@
-name: build
+name: release
 
 on:
   push:
     branches: [ master ]
 
 jobs:
-  build:
+  publish:
 
     runs-on: ubuntu-latest
 
