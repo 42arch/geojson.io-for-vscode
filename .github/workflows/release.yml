@@ -14,7 +14,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 16
-    - name: Publish VS Code Extension
     - run: npm ci
     - name: Publish to Visual Studio Marketplace
       uses: HaaLeo/publish-vscode-extension@v1
@@ -33,7 +32,7 @@ jobs:
         # Prepend all relative image links in README.md with this URL.
         # baseImagesUrl: # optional
         # Use yarn instead of npm while packing extension files.
-        yarn: "true" # optional
+        yarn: true # optional
         # Set this option to "true" to package your extension but do not publish it.
         # dryRun: # optional
         # Allow publishing extensions to the visual studio marketplace which use a proposed API (enableProposedApi: true).
