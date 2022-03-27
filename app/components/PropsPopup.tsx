@@ -1,24 +1,15 @@
 import { GeoJsonGeometryTypes, GeoJsonProperties } from "geojson"
 import React, { FunctionComponent, useEffect, useState } from "react"
-import './PropsPopup.css'
+import { SYMBOLLIST } from "../utils/symbol"
+import './PropsPopup.scss'
 
 interface IPorps {
 	type: GeoJsonGeometryTypes,
 	properties: GeoJsonProperties,
+	info: {[name: string]: any} | null,
 	updateFeature: (properties: GeoJsonProperties) => void,
 	cancel: () => void
 }
-
-const SYMBOLLIST = [
-	{ label: '', url: 'pin-m' },
-	{ label: 'circle', url: 'pin-m-circle' },
-	{ label: 'circle-stroked', url: 'pin-m-circle-stroked' },
-	{ label: 'square', url: 'pin-m-square' },
-	{ label: 'square-stroked', url: 'pin-m-square-stroked' },
-	{ label: 'star', url: 'pin-m-star' },
-	{ label: 'star-stroked', url: 'pin-m-star-stroked' },
-	{ label: 'cross', url: 'pin-m-cross' }
-]
 
 const genDefaultProps = (type: GeoJsonGeometryTypes, props: GeoJsonProperties) => {
 	switch (type) {
@@ -83,7 +74,7 @@ const PropInput: FunctionComponent<{ keyStr: string, value: any, update:(key: st
 	}
 }
 
-const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, updateFeature, cancel }) => {
+const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateFeature, cancel }) => {
 
 	const props = genDefaultProps(type, properties)
 
@@ -95,6 +86,7 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, updateFeature
 
 	const [styleShow, setStyleShow] = useState(true)
 	const [hiddenProps, setHiddenProps] = useState([''])
+	const [infoShow, setInfoShow] = useState(false)  // default show props table
 
 	const handleStyleCheck = (show: boolean) => {
 		const styleProps = ['marker-color', 'stroke', 'fill', 'stroke-width', 'stroke-opacity', 'fill-opacity', 'marker-size', 'marker-symbol']
@@ -138,54 +130,90 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, updateFeature
 
 	return (
 		<div className="props-popup">
-			<div className="props-info">
-				<table className="props-table">
-					<tbody>
-						{
-							props && Object.keys(props).filter(key => (!hiddenProps.includes(key))).map(key => {
-								return (
-									<tr className="item-row" key={key}>
-										<th>
-											<input type="text" defaultValue={key} />
-										</th>
-										<td>
-											<PropInput keyStr={key} value={props[key]} update={(keyStr: string, value: any) => handleValueChange(keyStr, value)} />
-										</td>
-									</tr>
-								)
-							})
-						}
-						{
-							newRowList.map((row, idx) => {
-								return (
-									<tr className="item-row" key={idx}>
-									<th>
-										<input type="text" defaultValue={row.key} onChange={(e) => { handleNewRowValueChange(idx, e.target.value, row.value) }}/>
-									</th>
-									<td>
-										<input type="text" defaultValue={row.key} onChange={(e) => { handleNewRowValueChange(idx, row.key, e.target.value) }}/>
-										{/* <PropInput keyStr={row.key} value={row.value} update={(keyStr: string, value: any) => handleNewRowValueChange(idx, keyStr, value)} /> */}
-									</td>
-								</tr>
-								)
-							})
-						}
-					</tbody>
-				</table>
-				<div className="opt">
-					<div id="add-row">
-						<span onClick={addNewRow}> <span style={ {fontSize: '18px', fontWeight: 800 }}> + </span>Add row</span>
-					</div>
-					<div id="show-style-props">
-						<input type="checkbox" name="show-style" id="show-style" checked={styleShow} onChange={(e) => { handleStyleCheck(e.target.checked) }}/>
-						<label htmlFor="show-style">Show style properties</label>
-					</div>
-				</div>
+			<div className="props-content">
+				{
+					infoShow ? (
+						<div className="props-info">
+							<table>
+								<tbody>
+									{
+										info && Object.keys(info).map(key => {
+											return (
+												<tr className="item-row" key={key}>
+													<th>
+														<input type="text" disabled defaultValue={key} />
+													</th>
+													<td>
+														<input type="text" disabled defaultValue={info[key]}/>
+													</td>
+												</tr>
+											)
+										})
+									}
+								</tbody>
+							</table>
+						</div>
+					) : (
+						<div className="props-table">
+							<table>
+								<tbody>
+									{
+										props && Object.keys(props).filter(key => (!hiddenProps.includes(key))).map(key => {
+											return (
+												<tr className="item-row" key={key}>
+													<td>
+														<input type="text" defaultValue={key} />
+													</td>
+													<td>
+														<PropInput keyStr={key} value={props[key]} update={(keyStr: string, value: any) => handleValueChange(keyStr, value)} />
+													</td>
+												</tr>
+											)
+										})
+									}
+									{
+										newRowList.map((row, idx) => {
+											return (
+												<tr className="item-row" key={idx}>
+												<td>
+													<input type="text" defaultValue={row.key} onChange={(e) => { handleNewRowValueChange(idx, e.target.value, row.value) }}/>
+												</td>
+												<td>
+													<input type="text" defaultValue={row.key} onChange={(e) => { handleNewRowValueChange(idx, row.key, e.target.value) }}/>
+													{/* <PropInput keyStr={row.key} value={row.value} update={(keyStr: string, value: any) => handleNewRowValueChange(idx, keyStr, value)} /> */}
+												</td>
+											</tr>
+											)
+										})
+									}
+								</tbody>
+							</table>
+							<div className="props-opt">
+								<div id="add-row">
+									<span onClick={addNewRow}> <span style={ {fontSize: '18px', fontWeight: 800 }}> + </span>Add row</span>
+								</div>
+								<div id="show-style-props">
+									<input type="checkbox" name="show-style" id="show-style" checked={styleShow} onChange={(e) => { handleStyleCheck(e.target.checked) }}/>
+									<label htmlFor="show-style">Show style properties</label>
+								</div>
+							</div>
+						</div>
+					)
+				}
 			</div>
 
-			<div className="btns">
-				<button id="save-btn" onClick={(e) => { beforeUpdate(props, newRowList) }}>Save</button>
-				{/* <button id="cancel-btn" onClick={() => { cancel() }}>Cancel</button> */}
+			<div className="props-bottom">
+				<div className="nav">
+					<div className={`nav-item ${infoShow === false ? 'active' : ''}` } onClick={() => { setInfoShow(false) }}>
+						Properties
+					</div>
+					<div className={`nav-item ${infoShow === true ? 'active' : ''}`} onClick={() => { setInfoShow(true) }}>
+						Info
+					</div>
+				</div>
+				<div className="btns">
+					<button id="save-btn" onClick={(e) => { beforeUpdate(props, newRowList) }}>Save</button>
+				</div>
 			</div>
 		</div>
 	)

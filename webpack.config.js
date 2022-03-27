@@ -3,9 +3,9 @@ const path = require('path');
 module.exports = {
   entry: path.join(__dirname, 'app', 'index.tsx'),
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.css'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', 'scss'],
   },
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {
@@ -14,9 +14,12 @@ module.exports = {
         exclude: '/node_modules/',
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader', 'css-loader'],
+        test: /\.(css)$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(s(a|c)ss)$/,
+        use: ['style-loader','css-loader', 'sass-loader']
       }
     ],
   },

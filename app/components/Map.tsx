@@ -1,11 +1,13 @@
 import React, { FunctionComponent, useEffect, useRef } from "react"
+import ReactDOM from "react-dom"
 import * as L from "leaflet"
 import 'leaflet-draw'
 import { FeatureGroup, Map, GeoJSON } from "leaflet"
 import getBbox from "@turf/bbox"
 import PropsPopup from "./PropsPopup"
 import { Feature, GeoJsonProperties } from "geojson"
-import ReactDOM from "react-dom"
+import { SYMBOLSIZELIST } from "../utils/symbol"
+import calcFeature from "../utils/calc"
 
 const assetUrl = `https://a.tiles.mapbox.com/v4/marker`
 const accessToken = `pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A`
@@ -13,12 +15,6 @@ const accessToken = `pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBk
 interface IProps {
   geojson: string
 }
-
-const SYMBOLSIZELIST = [
-  { label: 'large', value: 'pin-l', size: [21, 54] },
-  { label: 'medium', value: 'pin-m', size: [18, 42] },
-  { label: 'small', value: 'pin-s', size: [15, 37.5] },
-]
 
 const genIcon = (symbol: string, size: string, color: string) => {
   const symbolSize = SYMBOLSIZELIST.find(i => (i.label === size))
@@ -164,9 +160,11 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
         const popupNode = document.createElement("div")
         const popup = L.popup().setContent(popupNode)
         layer.bindPopup(popup)
+        
+        const featureInfo = calcFeature(feature)
 
         ReactDOM.render(
-          <PropsPopup type={feature.geometry.type} properties={feature.properties} updateFeature={(p:GeoJsonProperties) => {updateFeature(feature, p)}} cancel={() => { popup.closePopup() }}/>,
+          <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p: GeoJsonProperties) => {updateFeature(feature, p)}} cancel={() => { popup.closePopup() }}/>,
           popupNode
         )
       }
