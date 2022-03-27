@@ -24,5 +24,5 @@
 
 ## Screenshot
 
-![screenshot1](/images/1.png "screentshot")
+![screenshot1](https://user-images.githubusercontent.com/20656708/159824084-aa68605f-573a-4ff2-b1d2-54f7527130bf.png "screentshot")
 
