@@ -26,3 +26,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.2.0]
 
 - Support editing feature properties!
+
+## [0.3.0]
+
+- Use sass to optimize the style.
+- Support viewing geometrical data in popup.
