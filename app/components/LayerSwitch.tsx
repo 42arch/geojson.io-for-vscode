@@ -1,6 +1,6 @@
 import React from "react";
 import { FunctionComponent } from "react";
-import './LayerSwitch.css'
+import './LayerSwitch.scss'
 
 export const LayerSwitch: FunctionComponent = () => {
 
