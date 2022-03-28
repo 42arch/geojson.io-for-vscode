@@ -45,33 +45,85 @@ const genDefaultProps = (type: GeoJsonGeometryTypes, props: GeoJsonProperties) =
 }
 
 const PropInput: FunctionComponent<{ keyStr: string, value: any, update:(key: string, value: any) => void }> = ({ keyStr, value, update }) => {
-	if(['marker-color', 'stroke', 'fill'].includes(keyStr)) {
-		return <input type="color" defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}/>
-	} else if (['stroke-width'].includes(keyStr)) {
-		return <input type="number" defaultValue={value} min='0' onChange={(e) => { update(keyStr, e.target.value) }}/>
-	} else if (['stroke-opacity', 'fill-opacity'].includes(keyStr)) {
-		return <input type="number" defaultValue={value} max='1' min="0" step='0.1' onChange={(e) => { update(keyStr, e.target.value) }}/>
-	} else if (['marker-size'].includes(keyStr)) {
-		return <select defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}>
-			<option value="large">large</option>
-			<option value="medium">medium</option>
-			<option value="small">small</option>
-		</select>
-	} else if(['marker-symbol'].includes(keyStr)) {
-		return (
-			<select defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}>
-				{
-					SYMBOLLIST.map(symbol => {
-						return (
-							<option key={symbol.label} value={symbol.label}>{ symbol.label }</option>
-						)
-					})
-				}
-			</select>
-		)
-	} else {
-		return <input type="text" defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}/>
+	switch (keyStr) {
+		case 'marker-color':
+		case 'stroke':
+		case 'fill':
+			return (
+				<input type="color" defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}/>
+			)
+		case 'stroke-width':
+			return (
+				<input type="number" defaultValue={value} min='0' onChange={(e) => { update(keyStr, e.target.value) }}/>
+			)
+		case 'stroke-opacity':
+		case 'fill-opacity':
+			return (
+				<input type="number" defaultValue={value} max='1' min="0" step='0.1' onChange={(e) => { update(keyStr, e.target.value) }}/>
+			)
+		case 'marker-size':
+			return (
+				<select defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}>
+					<option value="large"> large </option>
+					<option value="medium"> medium </option>
+					<option value="small"> small </option>
+				</select>
+			)
+		case 'marker-symbol':
+			return (
+				<select defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}>
+					{
+						SYMBOLLIST.map(symbol => {
+							return (
+								<option key={symbol.label} value={symbol.label}> { symbol.label } </option>
+							)
+						})
+					}
+				</select>
+			)
+		default:
+			return (
+				<input type="text" defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}/>
+			)
 	}
+
+	// if(['marker-color', 'stroke', 'fill'].includes(keyStr)) {
+	// 	return (
+	// 		<input type="color" defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}/>
+	// 	) 
+	// } else if (['stroke-width'].includes(keyStr)) {
+	// 	return (
+	// 		<input type="number" defaultValue={value} min='0' onChange={(e) => { update(keyStr, e.target.value) }}/>
+	// 	)
+	// } else if (['stroke-opacity', 'fill-opacity'].includes(keyStr)) {
+	// 	return (
+	// 		<input type="number" defaultValue={value} max='1' min="0" step='0.1' onChange={(e) => { update(keyStr, e.target.value) }}/>
+	// 	) 
+	// } else if (['marker-size'].includes(keyStr)) {
+	// 	return (
+	// 		<select defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}>
+	// 			<option value="large"> large </option>
+	// 			<option value="medium"> medium </option>
+	// 			<option value="small"> small </option>
+	// 		</select>
+	// 	) 
+	// } else if(['marker-symbol'].includes(keyStr)) {
+	// 	return (
+	// 		<select defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}>
+	// 			{
+	// 				SYMBOLLIST.map(symbol => {
+	// 					return (
+	// 						<option key={symbol.label} value={symbol.label}> { symbol.label } </option>
+	// 					)
+	// 				})
+	// 			}
+	// 		</select>
+	// 	)
+	// } else {
+	// 	return (
+	// 		<input type="text" defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}/>
+	// 	) 
+	// }
 }
 
 const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateFeature, cancel }) => {
@@ -190,7 +242,7 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateF
 							</table>
 							<div className="props-opt">
 								<div id="add-row">
-									<span onClick={addNewRow}> <span style={ {fontSize: '18px', fontWeight: 800 }}> + </span>Add row</span>
+									<span onClick={ addNewRow }> <span style={ {fontSize: '18px', fontWeight: 800 }}> + </span>Add row</span>
 								</div>
 								<div id="show-style-props">
 									<input type="checkbox" name="show-style" id="show-style" checked={styleShow} onChange={(e) => { handleStyleCheck(e.target.checked) }}/>

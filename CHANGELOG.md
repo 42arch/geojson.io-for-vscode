@@ -31,3 +31,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Use sass to optimize the style.
 - Support viewing geometrical data in popup.
+
+## [0.3.5]
+
+- Check geojson format before previewing it.
+- Add more marker symbols.
