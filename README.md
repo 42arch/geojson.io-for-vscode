@@ -13,13 +13,15 @@
 
 ## What it is?
 
-`GeoJSON.IO for VSCode` is a Visual Studio Code extentsion that allows you to preview, create and edit your geojson data by the way of map visualization. 🗺
+`GeoJSON.IO for VSCode` is an open-source extension for Visual Studio Code.
+
+It simply helps you to create, preview and edit your geojson data on a map. 🗺
 
 ## Usage
 
 1. Install this extension. 😀
 2. Open your geojson file or an empty file (.json、.txt) in VSCode.
-3. Press `ctrl + shift + p`, search `View In Map` command and press `Enter`. Or just right click in your file editor window and select `View In Map`.
+3. Press `ctrl + shift + p`, search `View On Map` command and press `Enter`. Or just right click in your file editor window and select `View On Map`.
 4. Enjoy!
 
 ## Screenshot
