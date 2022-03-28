@@ -3,7 +3,7 @@
 	"name": "geojson-io-for-vscode",
 	"displayName": "GeoJSON.IO for VSCode",
 	"description": "Create, Edit and Preview GeoJSON Data In VSCode",
-	"version": "0.3.5",
+	"version": "0.3.6",
 	"engines": {
 		"vscode": "^1.63.0"
 	},
@@ -22,7 +22,7 @@
 		"commands": [
 			{
 				"command": "geojson-io-for-vscode.openMap",
-				"title": "View In Map"
+				"title": "View On Map"
 			}
 		],
 		"menus": {
