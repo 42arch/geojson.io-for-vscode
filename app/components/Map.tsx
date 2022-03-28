@@ -6,26 +6,13 @@ import { FeatureGroup, Map, GeoJSON } from "leaflet"
 import getBbox from "@turf/bbox"
 import PropsPopup from "./PropsPopup"
 import { Feature, GeoJsonProperties } from "geojson"
-import { SYMBOLSIZELIST } from "../utils/symbol"
 import calcFeature from "../utils/calc"
+import { ASSETURL, genMarkerIcon, TOKEN } from "../utils/symbol"
 
-const assetUrl = `https://a.tiles.mapbox.com/v4/marker`
 const accessToken = `pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A`
 
 interface IProps {
   geojson: string
-}
-
-const genIcon = (symbol: string, size: string, color: string) => {
-  const symbolSize = SYMBOLSIZELIST.find(i => (i.label === size))
-  const iconSize = symbolSize?.size ? symbolSize?.size : [15, 37.5]
-  const colorCode = (color && color.startsWith('#')) ? color.replace('#', '') : color
-  const iconUrl = `${ assetUrl }/${ symbolSize?.value ? symbolSize?.value : 'pin-m' }${symbol ? '-'+ symbol : '' }+${colorCode ? colorCode: '7e7e7e'}.png?access_token=${accessToken}`
-  const icon = L.icon({
-    iconUrl: iconUrl,
-    iconSize: L.point(iconSize[0], iconSize[1]),
-  })
-  return icon
 }
 
 const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
@@ -33,22 +20,21 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   const geojsonLayer = useRef<GeoJSON | null>(null)
   const editLayer = useRef<FeatureGroup>(new L.FeatureGroup())
   const pointIcon = L.icon({
-    iconUrl: `${assetUrl}/pin-m+7e7e7e.png?access_token=${accessToken}`,
-    // iconSize: [15, 35],
+    iconUrl: `${ASSETURL}/pin-m+7e7e7e.png?access_token=${TOKEN}`,
   })
 
   useEffect(() => {
     if(geojson) {
-      createGeoJSONLayer(geojson)
+      createGeoJSONLayer(geojson, true)
     }
 
     if(map.current) {
       return
     }
     map.current = L.map('map')
-    map.current.setView([45, 120], 7)
-    L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${accessToken}`, {
-      accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A'
+    map.current.setView([39, 120], 2)
+    L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${TOKEN}`, {
+      accessToken: TOKEN
     }).addTo(map.current)
 
     const option: L.Control.DrawConstructorOptions = {
@@ -108,16 +94,18 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   }, [geojson])
 
 
-  function createGeoJSONLayer(geojsonStr: string) {
+  function createGeoJSONLayer(geojsonStr: string, zoom: boolean = false) {
     if(editLayer.current) {
       map.current?.removeLayer(editLayer.current)
       editLayer.current.clearLayers()
     }
     const geojsonData = JSON.parse(geojsonStr)
-    const [minX, minY, maxX, maxY] = getBbox(geojsonData)
-    if(![minX, minY, maxX, maxY].includes(Infinity) || ![minX, minY, maxX, maxY].includes(-Infinity)) {
-      let bounds = L.latLngBounds(L.latLng(minY, minX), L.latLng(maxY, maxX))
-      map.current && map.current.flyToBounds(bounds)
+    if (zoom) {
+      const [minX, minY, maxX, maxY] = getBbox(geojsonData)
+      if(![minX, minY, maxX, maxY].includes(Infinity) || ![minX, minY, maxX, maxY].includes(-Infinity)) {
+        let bounds = L.latLngBounds(L.latLng(minY, minX), L.latLng(maxY, maxX))
+        map.current && map.current.flyToBounds(bounds)
+      }
     }
 
     geojsonLayer.current = L.geoJSON(geojsonData, {
@@ -150,7 +138,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
       },
       pointToLayer: function(geoJsonPoint, latlng) {
         const props = geoJsonPoint?.properties
-        const pointIcon = genIcon(props['marker-symbol'], props['marker-size'], props['marker-color'])
+        const pointIcon = genMarkerIcon(props['marker-symbol'], props['marker-size'], props['marker-color'])
         return L.marker(latlng, {
           icon: pointIcon
         })
