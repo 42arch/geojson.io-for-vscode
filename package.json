@@ -51,7 +51,7 @@
 		"pretest": "yarn run compile && yarn run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js",
-		"release": "standard-version"
+		"changelog": "standard-version"
 	},
 	"devDependencies": {
 		"@types/geojson": "^7946.0.8",
