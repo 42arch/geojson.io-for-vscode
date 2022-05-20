@@ -1,151 +1,151 @@
 .props-popup {
-	min-width: 100px;
-	min-height: 60px;
-	z-index: 99;
+  min-width: 100px;
+  min-height: 60px;
+  z-index: 99;
 
-	.props-content {
+  .props-content {
 
-		table {
-			border-spacing: 0;
-			border-collapse: collapse;
-			width: 100%;
-			overflow: auto;
-			border-bottom: 1px solid #ccc;
+    table {
+      border-spacing: 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow: auto;
+      border-bottom: 1px solid #ccc;
 
-			tr {
+      tr {
 
-				th {
-					white-space: nowrap;
-					border: 1px solid #ccc;
-					padding: 0 3px;
-				}
-	
-				td {
-					border: 1px solid #ccc;
-					padding: 0 3px;
-				}
+        th {
+          white-space: nowrap;
+          border: 1px solid #ccc;
+          padding: 0 3px;
+        }
+  
+        td {
+          border: 1px solid #ccc;
+          padding: 0 3px;
+        }
 
-				&:nth-child(even) {
-					
-					th {
-						background-color: #f7f7f7;
-					}
-					
-					td {
-						background-color: #f7f7f7;
-					}
-				}
-			}
+        &:nth-child(even) {
+          
+          th {
+            background-color: #f7f7f7;
+          }
+          
+          td {
+            background-color: #f7f7f7;
+          }
+        }
+      }
 
-			input {
-				width: 100px;
-				border: 0;
-				outline: 0;
-				background: transparent;
-				height: 24px;
-				line-height: 24px;
+      input {
+        width: 100px;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        height: 24px;
+        line-height: 24px;
 
-				&:focus-visible {
-					border: 0;
-					outline: 0;
-				}
-			}
+        &:focus-visible {
+          border: 0;
+          outline: 0;
+        }
+      }
 
-			select {
-				width: 100px;
-				border: 0;
-				outline: 0;
-				background: transparent;
-				height: 24px;
-				line-height: 24px;
-				border-radius: 0;
-				text-align: center;
+      select {
+        width: 100px;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        height: 24px;
+        line-height: 24px;
+        border-radius: 0;
+        text-align: center;
 
-				&:focus-visible {
-					border: 0;
-					outline: 0;
-				}
-			}
+        &:focus-visible {
+          border: 0;
+          outline: 0;
+        }
+      }
 
-		}
+    }
 
-		.props-table {
+    .props-table {
 
-			.props-opt {
-				width: 100%;
-				height: 32px;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-	
-				#add-row {
-					width: 35%;
-				}
-				
-				#add-row span {
-					cursor: pointer;
-				}
-				
-				#show-style-props {
-					width: 65%;
-				}
-			}
-		}
+      .props-opt {
+        width: 100%;
+        height: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+  
+        #add-row {
+          width: 35%;
+        }
+        
+        #add-row span {
+          cursor: pointer;
+        }
+        
+        #show-style-props {
+          width: 65%;
+        }
+      }
+    }
 
-		.props-info {
+    .props-info {
 
-		}
+    }
 
-	}
+  }
 
-	.props-bottom {
+  .props-bottom {
 
-		.nav {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
+    .nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
 
 
-			.nav-item {
-				margin-top: 10px;
-				width: 50%;
-				height: 28px;
-				line-height: 28px;
-				text-align: center;
-				border: 1px solid #ccc;
-				cursor: pointer;
-				background: #eee;
+      .nav-item {
+        margin-top: 10px;
+        width: 50%;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        background: #eee;
 
-				&.active {
-					background: transparent;
-					border-left: 1px solid transparent;
-					border-right: 1px solid transparent;
-					border-top: 1px solid transparent;
-				}
-			}
-		}
+        &.active {
+          background: transparent;
+          border-left: 1px solid transparent;
+          border-right: 1px solid transparent;
+          border-top: 1px solid transparent;
+        }
+      }
+    }
 
-		.btns {
-			display: flex;
-			justify-content: space-evenly;
-			align-items: center;
-			margin-top: 10px;
-			height: 32px;
-	
-			button {
-				height: 28px;
-				font-size: 14px;
-				cursor: pointer;
-				border: 0;
-				border-radius: 1px;
-				background-color: #59AAE7;
-				color: #ffffff;
-				font-weight: 500;
-	
-				&:hover {
-					background-color: #006EA7;
-				}
-			}
-		}	
-	}
+    .btns {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      margin-top: 10px;
+      height: 32px;
+  
+      button {
+        height: 28px;
+        font-size: 14px;
+        cursor: pointer;
+        border: 0;
+        border-radius: 1px;
+        background-color: #59AAE7;
+        color: #ffffff;
+        font-weight: 500;
+  
+        &:hover {
+          background-color: #006EA7;
+        }
+      }
+    }	
+  }
 }
