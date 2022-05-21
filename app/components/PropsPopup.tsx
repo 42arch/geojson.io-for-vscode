@@ -1,6 +1,6 @@
 import { GeoJsonGeometryTypes, GeoJsonProperties } from "geojson"
 import React, { FunctionComponent, useEffect, useState } from "react"
-import { SYMBOLLIST } from "../utils/symbol"
+import { SYMBOL_LIST } from "../utils/constant"
 import './PropsPopup.scss'
 
 interface IPorps {
@@ -73,7 +73,7 @@ const PropInput: FunctionComponent<{ keyStr: string, value: any, update:(key: st
       return (
         <select defaultValue={value} onChange={(e) => { update(keyStr, e.target.value) }}>
           {
-            SYMBOLLIST.map(symbol => {
+            SYMBOL_LIST.map(symbol => {
               return (
                 <option key={symbol.label} value={symbol.label}> { symbol.label } </option>
               )
