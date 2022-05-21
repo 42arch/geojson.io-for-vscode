@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react"
 import MapCon from "./Map";
-// import { LayerSwitch } from "./LayerSwitch";
 
 export const App: FunctionComponent = () => {
 
@@ -21,6 +20,12 @@ export const App: FunctionComponent = () => {
   }
 
   useEffect(() => {
+    let canvas = document.getElementById('canvas') as HTMLCanvasElement
+    if(canvas) {
+      canvas.width=canvas. clientWidth*window.devicePixelRatio;
+      canvas.height=canvas.clientHeight*window.devicePixelRatio; 
+    }
+
     window.addEventListener('message', (event: MessageEvent<string>) => {
       handleMessagesFromExtension(event)
     })
@@ -29,8 +34,9 @@ export const App: FunctionComponent = () => {
     }
   }, [handleMessagesFromExtension])
 
-  return (<div id="app">
-    <MapCon geojson={geojsonData}/>
-    {/* <LayerSwitch/> */}
-  </div>)
+  return (
+    <div id="app">
+      <MapCon geojson={geojsonData}/>
+    </div>
+  )
 }

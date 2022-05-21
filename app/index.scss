@@ -25,6 +25,20 @@ html, body {
           border-radius: 50%;
         }
 
+        .leaflet-control-layers {
+          
+          &.leaflet-control-layers-expanded {
+            padding: 4px;
+          }
+
+          .leaflet-control-layers-toggle {
+            background-size: 16px 16px;
+            width: 30px;
+            height: 30px;
+          }
+        }
+
+
         /* leaflet popup style */
         .leaflet-popup-content {
           margin: 20px 10px 5px 10px;
@@ -32,6 +46,11 @@ html, body {
         .leaflet-popup-content-wrapper {
           border-radius: 2px;
         }
+      }
+
+      ::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
       }
     }
   }

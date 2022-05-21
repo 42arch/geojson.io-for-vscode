@@ -1,41 +1,54 @@
-import React, { FunctionComponent, useEffect, useRef } from "react"
+import React, { FunctionComponent, useEffect, useRef, useState } from "react"
 import ReactDOM from "react-dom"
 import * as L from "leaflet"
+import { FeatureGroup, Map, GeoJSON, Layer } from "leaflet"
 import 'leaflet-draw'
-import { FeatureGroup, Map, GeoJSON } from "leaflet"
+import 'esri-leaflet'
+import { vectorBasemapLayer } from 'esri-leaflet-vector'
 import getBbox from "@turf/bbox"
 import PropsPopup from "./PropsPopup"
 import { Feature, GeoJsonProperties } from "geojson"
 import calcFeature from "../utils/calc"
-import { ASSETURL, genMarkerIcon, TOKEN } from "../utils/symbol"
-
-const accessToken = `pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A`
+import { ASSET_URL, genMarkerIcon, TOKEN, API_KEY, LAYER_LIST } from "../utils/constant"
 
 interface IProps {
   geojson: string
 }
 
+const pointIcon = L.icon({
+  iconUrl: `${ASSET_URL}/pin-m+7e7e7e.png?access_token=${TOKEN}`,
+})
+
+const vectorTiles: { [name: string]: Layer } = {}
+
 const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   const map = useRef<Map | null>(null)
   const geojsonLayer = useRef<GeoJSON | null>(null)
   const editLayer = useRef<FeatureGroup>(new L.FeatureGroup())
-  const pointIcon = L.icon({
-    iconUrl: `${ASSETURL}/pin-m+7e7e7e.png?access_token=${TOKEN}`,
-  })
 
   useEffect(() => {
     if(geojson) {
       createGeoJSONLayer(geojson, true)
     }
-
     if(map.current) {
       return
     }
-    map.current = L.map('map')
-    map.current.setView([39, 120], 2)
-    L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${TOKEN}`, {
-      accessToken: TOKEN
-    }).addTo(map.current)
+    map.current = L.map('map', {
+      center: [0, 0],
+      zoom: 2,
+    })
+
+    vectorTiles['Default'] = vectorBasemapLayer(null, {
+      apiKey: API_KEY
+    })
+    LAYER_LIST.forEach((layerStr) => {
+      vectorTiles[layerStr] = vectorBasemapLayer(layerStr, {
+        apiKey: API_KEY
+      })
+    })
+
+    L.control.layers(vectorTiles).addTo(map.current)
+    vectorTiles.Default.addTo(map.current)
 
     const option: L.Control.DrawConstructorOptions = {
       position: 'topright',
@@ -168,8 +181,9 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   }
 
   return (
-    <div id="map" className="map">
-    </div>
+    <>
+      <div id="map" className="map"></div>
+    </>
   )
 }
 
