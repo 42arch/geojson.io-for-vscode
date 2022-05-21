@@ -1,3 +1,5 @@
+<h1 align="center"> GeoJSON.IO for VSCode </h1>
+
 
 <a><img src="https://img.shields.io/visual-studio-marketplace/i/swallow.geojson-io-for-vscode?style=for-the-badge" alt="install"/></a>
 <a><img src="https://img.shields.io/visual-studio-marketplace/d/swallow.geojson-io-for-vscode?style=for-the-badge" alt="download"/></a>
@@ -8,8 +10,6 @@
 <a><img src="https://img.shields.io/github/workflow/status/rend42/geojson.io-for-vscode/release?event=push&style=for-the-badge" alt="build"/></a>
 
 
-
-# `GeoJSON.IO for VSCode`
 
 ## What it is?
 
@@ -26,5 +26,5 @@ It simply helps you to create, preview and edit your geojson data on a map. 🗺
 
 ## Screenshot
 
-![screenshot1](https://user-images.githubusercontent.com/20656708/159824084-aa68605f-573a-4ff2-b1d2-54f7527130bf.png "screentshot")
+![screenshot](https://user-images.githubusercontent.com/20656708/169523129-12bf35c9-6c47-45e2-b933-d6fb6421d108.png)
 
