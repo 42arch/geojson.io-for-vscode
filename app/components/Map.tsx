@@ -90,18 +90,19 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
     map.current.on('draw:created', (e) => {
       editLayer.current.addLayer(e.layer)
       const curGeoJSONData = editLayer.current.toGeoJSON()
-      vscode.postMessage(JSON.stringify(curGeoJSONData))
-      createGeoJSONLayer(JSON.stringify(curGeoJSONData))
+      const s = JSON.stringify(curGeoJSONData)
+      vscode.postMessage({ type: 'data', data: s })
+      createGeoJSONLayer(s)
     })
 
     map.current.on('draw:edited', (e) => {
       const curGeoJSONData = editLayer.current.toGeoJSON()
-      vscode.postMessage(JSON.stringify(curGeoJSONData))
+      vscode.postMessage({ type: 'data', data: JSON.stringify(curGeoJSONData) })
     })
 
     map.current.on('draw:deleted', (e) => {
       const curGeoJSONData = editLayer.current.toGeoJSON()
-      vscode.postMessage(JSON.stringify(curGeoJSONData))
+      vscode.postMessage({ type: 'data', data: JSON.stringify(curGeoJSONData) })
     })
 
   }, [geojson])
@@ -121,63 +122,69 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
       }
     }
 
-    geojsonLayer.current = L.geoJSON(geojsonData, {
-      style: function(feature) {
-        const props = feature?.properties
-        switch (feature?.geometry.type) {
-          case 'Polygon':
-          case 'MultiPolygon':
-            return {
-              fillColor: props['fill'] ? props['fill'] : '#555555',
-              fillOpacity: props['fill-opacity'] ? props['fill-opacity'] : 0.5,
-              stroke: true,
-              color: props['stroke'] ? props['stroke'] : '#555555',
-              opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
-              weight: props['stroke-width'] ? props['stroke-width'] : 2
-            }
-          case 'LineString':
-          case 'MultiLineString':
-            return {
-              color: props['stroke'] ? props['stroke'] : '#555555',
-              opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
-              weight: props['stroke-width'] ? props['stroke-width'] : 2
-            }
-          case 'Point':
-          case 'MultiPoint':
-            return { }
-          default:
-            return { }
+    try {
+      geojsonLayer.current = L.geoJSON(geojsonData, {
+        style: function(feature) {
+          const props = feature?.properties
+          switch (feature?.geometry.type) {
+            case 'Polygon':
+            case 'MultiPolygon':
+              return {
+                fillColor: props['fill'] ? props['fill'] : '#555555',
+                fillOpacity: props['fill-opacity'] ? props['fill-opacity'] : 0.5,
+                stroke: true,
+                color: props['stroke'] ? props['stroke'] : '#555555',
+                opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
+                weight: props['stroke-width'] ? props['stroke-width'] : 2
+              }
+            case 'LineString':
+            case 'MultiLineString':
+              return {
+                color: props['stroke'] ? props['stroke'] : '#555555',
+                opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
+                weight: props['stroke-width'] ? props['stroke-width'] : 2
+              }
+            case 'Point':
+            case 'MultiPoint':
+              return { }
+            default:
+              return { }
+          }
+        },
+        pointToLayer: function(geoJsonPoint, latlng) {
+          const props = geoJsonPoint?.properties
+          const pointIcon = genMarkerIcon(props['marker-symbol'], props['marker-size'], props['marker-color'])
+          return L.marker(latlng, {
+            icon: pointIcon
+          })
+        },
+        onEachFeature: function(feature: Feature, layer: L.Layer) {
+          editLayer.current.addLayer(layer)
+          const popupNode = document.createElement("div")
+          const popup = L.popup().setContent(popupNode)
+          layer.bindPopup(popup)
+          
+          const featureInfo = calcFeature(feature)
+  
+          ReactDOM.render(
+            <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p: GeoJsonProperties) => {updateFeature(feature, p)}} cancel={() => { popup.closePopup() }}/>,
+            popupNode
+          )
         }
-      },
-      pointToLayer: function(geoJsonPoint, latlng) {
-        const props = geoJsonPoint?.properties
-        const pointIcon = genMarkerIcon(props['marker-symbol'], props['marker-size'], props['marker-color'])
-        return L.marker(latlng, {
-          icon: pointIcon
-        })
-      },
-      onEachFeature: function(feature: Feature, layer: L.Layer) {
-        editLayer.current.addLayer(layer)
-        const popupNode = document.createElement("div")
-        const popup = L.popup().setContent(popupNode)
-        layer.bindPopup(popup)
-        
-        const featureInfo = calcFeature(feature)
-
-        ReactDOM.render(
-          <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p: GeoJsonProperties) => {updateFeature(feature, p)}} cancel={() => { popup.closePopup() }}/>,
-          popupNode
-        )
-      }
-    })
-    map.current?.addLayer(editLayer.current)
+      })
+      map.current?.addLayer(editLayer.current)
+    } catch (error) {
+      console.log(2222, { type: 'error', data: String(error) })
+      vscode.postMessage({ type: 'error', data: String(error) })
+    }
   }
 
   const updateFeature = (feature: Feature, properties: GeoJsonProperties) => {
     feature.properties = properties
     const curGeoJSONData = editLayer.current.toGeoJSON()
-    createGeoJSONLayer(JSON.stringify(curGeoJSONData))
-    vscode.postMessage(JSON.stringify(curGeoJSONData))
+    const s = JSON.stringify(curGeoJSONData)
+    createGeoJSONLayer(s)
+    vscode.postMessage({ type: 'data', data: s })
   }
 
   return (

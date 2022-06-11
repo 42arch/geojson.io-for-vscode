@@ -1,9 +1,13 @@
 import * as vscode from "vscode"
 import * as path from "path"
 
+type Message = {
+  type: 'error' | 'info' | 'warning' | 'data',
+  data: string
+}
+
 export class ViewLoader {
   public static currentPanel?: vscode.WebviewPanel
-
   private panel: vscode.WebviewPanel
   private context: vscode.ExtensionContext
   private disposables: vscode.Disposable[]
@@ -20,8 +24,20 @@ export class ViewLoader {
 
     this.renderWebview()
 
-    this.panel.webview.onDidReceiveMessage((message: string) => {
-      this.replaceTextContent(message)
+    this.panel.webview.onDidReceiveMessage((message: Message) => {
+      switch (message.type) {
+        case 'data':
+          this.replaceTextContent(message.data)
+          break
+        case 'error':
+          vscode.window.showErrorMessage(message.data)
+          break
+        case 'warning':
+          vscode.window.showWarningMessage(message.data)
+          break
+        default:
+          break
+      }
     }, null, this.disposables)
 
     this.panel.onDidDispose(() => {
@@ -91,7 +107,6 @@ export class ViewLoader {
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Map App</title>
-          <script src="https://unpkg.com/esri-leaflet-vector@3.1.1/dist/esri-leaflet-vector.js" crossorigin=""></script>
         </head>
 
         <body>
