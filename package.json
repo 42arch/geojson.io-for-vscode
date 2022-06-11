@@ -36,6 +36,11 @@
           "when": "editorFocus && resourceExtname== '.txt'",
           "command": "geojson-io-for-vscode.openMap",
           "group": "navigation"
+        },
+        {
+          "when": "editorFocus && resourceExtname== '.geojson'",
+          "command": "geojson-io-for-vscode.openMap",
+          "group": "navigation"
         }
       ]
     }
