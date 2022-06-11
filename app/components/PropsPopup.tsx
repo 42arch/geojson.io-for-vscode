@@ -7,7 +7,7 @@ interface IPorps {
   type: GeoJsonGeometryTypes,
   properties: GeoJsonProperties,
   info: {[name: string]: any} | null,
-  updateFeature: (properties: GeoJsonProperties) => void,
+  updateFeature: (properties: GeoJsonProperties , isSave ?: boolean) => void,
   cancel: () => void
 }
 
@@ -95,7 +95,9 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateF
   const handleValueChange = (key: string, value: any) => {
     if(props) {
       props[key] = value	
+      updateFeature(props,false)
     }
+    
   }
 
   const [styleShow, setStyleShow] = useState(true)
@@ -136,6 +138,7 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateF
       const newProp: GeoJsonProperties = {}
       newProp[item.key] = item.value
       if(item.key) {
+        //@ts-ignore
         Object.assign(props, newProp)
       }
     })

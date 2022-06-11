@@ -167,7 +167,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
           const featureInfo = calcFeature(feature)
   
           ReactDOM.render(
-            <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p: GeoJsonProperties) => {updateFeature(feature, p)}} cancel={() => { popup.closePopup() }}/>,
+            <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p: GeoJsonProperties , isSave : boolean = true) => {updateFeature(feature, p , isSave , layer)}} cancel={() => { popup.closePopup() }}/>,
             popupNode
           )
         }
@@ -178,13 +178,63 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
       vscode.postMessage({ type: 'error', data: String(error) })
     }
   }
+  function getLeafStyleFromGeoJsonStyle(type : string,properties : GeoJsonProperties){
+      const props = properties
+      if(props === null) return {}
+      switch (type) {
+        case 'Polygon':
+        case 'MultiPolygon':
+          return {
+            fillColor: props['fill'] ? props['fill'] : '#555555',
+            fillOpacity: props['fill-opacity'] ? props['fill-opacity'] : 0.5,
+            stroke: true,
+            color: props['stroke'] ? props['stroke'] : '#555555',
+            opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
+            weight: props['stroke-width'] ? props['stroke-width'] : 2
+          }
+        case 'LineString':
+        case 'MultiLineString':
+          return {
+            color: props['stroke'] ? props['stroke'] : '#555555',
+            opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
+            weight: props['stroke-width'] ? props['stroke-width'] : 2
+          }
+        case 'Point':
+          return genMarkerIcon(props['marker-symbol'], props['marker-size'], props['marker-color'])
+        case 'MultiPoint':
+          return { }
+        default:
+          return { }
+      }
+  }
+  function upadteStyle(feature : Feature, properties : GeoJsonProperties , layer : L.Layer){
+    if(editLayer.current) {
+      const style = getLeafStyleFromGeoJsonStyle(feature.geometry.type,properties)
+      if(!style) return
+      if(layer instanceof L.Marker) {
+        layer.setIcon(style as L.Icon)
+        return
+      }
+      if(layer instanceof L.Polyline || layer instanceof L.Polygon){
+        layer.setStyle(style as L.PathOptions)
+        return
+      }
+      
+    }
+  }
 
-  const updateFeature = (feature: Feature, properties: GeoJsonProperties) => {
+  const updateFeature = (feature: Feature, properties: GeoJsonProperties , isSave : boolean , layer : L.Layer) => {
     feature.properties = properties
     const curGeoJSONData = editLayer.current.toGeoJSON()
     const s = JSON.stringify(curGeoJSONData)
-    createGeoJSONLayer(s)
-    vscode.postMessage({ type: 'data', data: s })
+    // when isSave is true update style and update files false update style not update files
+    if(isSave) {
+      createGeoJSONLayer(s)
+      vscode.postMessage({ type: 'data', data: s })
+      return
+    }
+    upadteStyle(feature , properties , layer)
+   
   }
 
   return (
