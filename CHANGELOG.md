@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.2](https://github.com/rend42/geojson.io-for-vscode/compare/v0.4.1...v0.4.2) (2022-06-11)
+
+
+### Bug Fixes
+
+* commnand "View On Map" resulted in an error ([79eca4f](https://github.com/rend42/geojson.io-for-vscode/commit/79eca4f2cf5c232d7b71d40ecbe634e9d885fbfa)), closes [#24](https://github.com/rend42/geojson.io-for-vscode/issues/24)
+
 ### [0.4.1](https://github.com/rend42/geojson.io-for-vscode/compare/v0.4.0...v0.4.1) (2022-05-21)
 
 ## 0.4.0 (2022-05-21)
