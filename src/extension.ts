@@ -19,17 +19,24 @@ function geojsonTest(geojsonStr: string) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.openMap', (uri) => {
-    if(uri.path) {
-      readFile(uri._fsPath, (err, data) => {
-        const dataStr = data.toString()
-        if (geojsonTest(dataStr)) {
-          ViewLoader.showWebview(context)
-          ViewLoader.postMessageToWebview(dataStr)
-        } else {
-          vscode.window.showErrorMessage('Oops! the data you opened is not geojson format. ')
-        }
-      })
+  let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.openMap', (uri: vscode.Uri) => {
+    try {
+      const fileUri = uri || vscode.window.activeTextEditor.document.uri
+      if(fileUri.fsPath) {
+        readFile(fileUri.fsPath, (err, data) => {
+          const s = data.toString()
+          if (geojsonTest(s)) {
+            ViewLoader.showWebview(context)
+            ViewLoader.postMessageToWebview(s)
+          } else {
+            vscode.window.showErrorMessage('Oops! the data you trying to view is not geojson format.')
+          }
+        })
+      } else {
+        vscode.window.showErrorMessage('No geojson file to view!')
+      }
+    } catch (error) {
+      vscode.window.showErrorMessage("geojson.io can't recognize this file!")
     }
   })
   context.subscriptions.push(openWebview)
