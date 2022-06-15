@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* commnand "View On Map" resulted in an error ([79eca4f](https://github.com/rend42/geojson.io-for-vscode/commit/79eca4f2cf5c232d7b71d40ecbe634e9d885fbfa)), closes [#24](https://github.com/rend42/geojson.io-for-vscode/issues/24)
+* command "View On Map" resulted in an error ([79eca4f](https://github.com/rend42/geojson.io-for-vscode/commit/79eca4f2cf5c232d7b71d40ecbe634e9d885fbfa)), closes [#24](https://github.com/rend42/geojson.io-for-vscode/issues/24)
 
 ### [0.4.1](https://github.com/rend42/geojson.io-for-vscode/compare/v0.4.0...v0.4.1) (2022-05-21)
 
