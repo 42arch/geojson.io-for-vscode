@@ -127,15 +127,11 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateF
     newRowList.splice(idx, 1, row)
   }
 
-  // useEffect(() => {
-  // 	console.log('rowlist update', newRowList)
-  // }, [newRowList])
-
   const beforeUpdate = (props: GeoJsonProperties, newPropsList: Array<{key: string, value: any}>) => {
     newPropsList.forEach(item => {
       const newProp: GeoJsonProperties = {}
       newProp[item.key] = item.value
-      if(item.key) {
+      if(item.key && props) {
         Object.assign(props, newProp)
       }
     })
