@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.3](https://github.com/rend42/geojson.io-for-vscode/compare/v0.4.2...v0.4.3) (2022-06-16)
+
+
+### Bug Fixes
+
+* type error ([d8ebdb5](https://github.com/rend42/geojson.io-for-vscode/commit/d8ebdb5997d4f442ca6fb74874fbf830b73fd7f6))
+
 ### [0.4.2](https://github.com/rend42/geojson.io-for-vscode/compare/v0.4.1...v0.4.2) (2022-06-11)
 
 
