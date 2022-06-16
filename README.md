@@ -30,12 +30,12 @@ Just like the website [geojson.io](http://geojson.io) 😍.
   3. There are two ways to open the map window: Press `ctrl + shift + p` to open the command palette, search `View On Map` command and press `Enter`; Or just right-click on your file text-editor window and select `View On Map` option.
 
 
-> Tip🔈: Every time after creating or editing a feature, the data on the text editor is unsaved status. don't forget to save it manually before closed vscode.
+> Tip🔈: Every time after creating or editing a feature, the data on the text editor is unsaved status, don't forget to save it manually before closed VSCode.
 
 
 ## Screenshot
 
-![screenshot](https://user-images.githubusercontent.com/20656708/169523129-12bf35c9-6c47-45e2-b933-d6fb6421d108.png)
+![screenshot](https://user-images.githubusercontent.com/20656708/174084511-5c69a506-98ba-4531-b07a-b7b2a10b0ab6.png)
 
 ## More
 
