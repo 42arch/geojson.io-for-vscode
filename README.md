@@ -17,9 +17,9 @@ Just like the website [geojson.io](http://geojson.io) 😍.
 
 ## Features
 
-* Support real-time creating, editing and previewing geojson data.
+* Support real-time creating, editing, and previewing geojson data.
 * Support custom styling features.
-* Multiple of basemap-layers.
+* Multiple base-map layers.
 
 ## Usage
 
@@ -30,7 +30,7 @@ Just like the website [geojson.io](http://geojson.io) 😍.
   3. There are two ways to open the map window: Press `ctrl + shift + p` to open the command palette, search `View On Map` command and press `Enter`; Or just right-click on your file text-editor window and select `View On Map` option.
 
 
-> Tip🔈: every time after creating or editing a feature, the data on the text editor is unsaved status. don't forget to save it manually before closed vscode.
+> Tip🔈: Every time after creating or editing a feature, the data on the text editor is unsaved status. don't forget to save it manually before closed vscode.
 
 
 ## Screenshot
@@ -39,7 +39,7 @@ Just like the website [geojson.io](http://geojson.io) 😍.
 
 ## More
 
-If you find any bugs or have some suggestions, please make an issue on the Github to let me know. And if this extension helped you, don't forget to leave me a star ⭐.
+If you find any bugs or have some suggestions, please make an [issue](https://github.com/REND42/geojson.io-for-vscode/issues) on the Github to let me know. And if this extension helped you, don't forget to leave a star ⭐.
 
 ## License
 [MIT](https://github.com/REND42/geojson.io-for-vscode/blob/main/LICENSE)
