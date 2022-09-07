@@ -1,11 +1,13 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
 		"target": "ESNEXT",
 		"outDir": "out",
 		"lib": [
 			"ESNEXT",
-      "dom"
+			"dom"
 		],
 		"types": ["node"],
 		"moduleResolution": "node",
