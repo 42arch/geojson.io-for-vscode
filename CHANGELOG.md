@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.4](https://github.com/rend42/geojson.io-for-vscode/compare/v0.4.3...v0.4.4) (2022-09-07)
+
+
+### Features
+
+* use ajv to validate the geojson data schema ([21d976d](https://github.com/rend42/geojson.io-for-vscode/commit/21d976d69e7726268ab86ead2a71a6ed7c674ab9))
+
 ### [0.4.3](https://github.com/rend42/geojson.io-for-vscode/compare/v0.4.2...v0.4.3) (2022-06-16)
 
 
