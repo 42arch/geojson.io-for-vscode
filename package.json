@@ -8,7 +8,8 @@
     "vscode": "^1.63.0"
   },
   "icon": "images/icon.png",
-  "repository": "https://github.com/rend42/geojson.io-for-vscode.git",
+  "repository": "https://github.com/re0x2a/geojson.io-for-vscode.git",
+  "homepage": "https://github.com/re0x2a/geojson.io-for-vscode.git",
   "categories": [
     "Other",
     "Data Science",

@@ -39,7 +39,7 @@ Just like the website [geojson.io](http://geojson.io) 😍.
 
 ## More
 
-If you find any bugs or have some suggestions, please make an [issue](https://github.com/REND42/geojson.io-for-vscode/issues) on the Github to let me know. And if this extension helped you, don't forget to leave a star ⭐.
+If you find any bugs or have some suggestions, please make an [issue](https://github.com/RE0x2A/geojson.io-for-vscode/issues) on the Github to let me know. And if this extension helped you, don't forget to leave a star ⭐.
 
 ## License
-[MIT](https://github.com/REND42/geojson.io-for-vscode/blob/main/LICENSE)
+[MIT](https://github.com/RE0x2A/geojson.io-for-vscode/blob/main/LICENSE)
