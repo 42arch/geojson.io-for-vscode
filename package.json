@@ -16,31 +16,36 @@
     "Visualization"
   ],
   "activationEvents": [
-    "onCommand:geojson-io-for-vscode.openMap"
+    "onCommand:geojson-io-for-vscode.viewOnMap",
+    "onCommand:geojson-io-for-vscode.validate"
   ],
   "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "geojson-io-for-vscode.openMap",
+        "command": "geojson-io-for-vscode.viewOnMap",
         "title": "View On Map"
+      },
+      {
+        "command": "geojson-io-for-vscode.validate",
+        "title": "Validte GeoJSON"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "when": "editorFocus && resourceExtname== '.json'",
-          "command": "geojson-io-for-vscode.openMap",
+          "command": "geojson-io-for-vscode.viewOnMap",
           "group": "navigation"
         },
         {
           "when": "editorFocus && resourceExtname== '.txt'",
-          "command": "geojson-io-for-vscode.openMap",
+          "command": "geojson-io-for-vscode.viewOnMap",
           "group": "navigation"
         },
         {
           "when": "editorFocus && resourceExtname== '.geojson'",
-          "command": "geojson-io-for-vscode.openMap",
+          "command": "geojson-io-for-vscode.viewOnMap",
           "group": "navigation"
         }
       ]
