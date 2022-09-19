@@ -16,19 +16,15 @@
     "Visualization"
   ],
   "activationEvents": [
-    "onCommand:geojson-io-for-vscode.viewOnMap",
-    "onCommand:geojson-io-for-vscode.validate"
+    "onCommand:geojson-io-for-vscode.viewOnMap"
   ],
+  "type": "commonjs",
   "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "geojson-io-for-vscode.viewOnMap",
         "title": "View On Map"
-      },
-      {
-        "command": "geojson-io-for-vscode.validate",
-        "title": "Validte GeoJSON"
       }
     ],
     "menus": {
