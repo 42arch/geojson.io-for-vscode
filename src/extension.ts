@@ -5,6 +5,7 @@ import { ViewLoader } from './view/ViewLoader'
 
 export function activate(context: vscode.ExtensionContext) {
   let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.openMap', (uri: vscode.Uri) => {
+    vscode.window.showInformationMessage('ready to view...')
     try {
       const fileUri = uri || vscode.window.activeTextEditor.document.uri
       if(fileUri.fsPath) {
