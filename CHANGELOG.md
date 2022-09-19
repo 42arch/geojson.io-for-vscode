@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.8](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.4.7...v0.4.8) (2022-09-19)
+
+
+### Bug Fixes
+
+* **validate:** remove ajv validation due to some unknown problems ([96ce22f](https://github.com/re0x2a/geojson.io-for-vscode/commit/96ce22fcd004606ebfe9ca58294c2e4d3d66e98d))
+
 ### [0.4.7](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.4.6...v0.4.7) (2022-09-19)
 
 
