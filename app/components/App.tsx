@@ -1,9 +1,8 @@
-import React, { FunctionComponent, useEffect, useState } from "react"
-import MapCon from "./Map";
+import React, { createContext, FunctionComponent, useEffect, useState } from "react"
+import MapCon from "./Map"
 
-export const App: FunctionComponent = () => {
+const App: FunctionComponent = () => {
 
-  const [messagesFromExtension, setMessagesFromExtension] = useState<string[]>([])
   const [geojsonData, setGeojsonData] = useState<string>('')
 
   const handleMessagesFromExtension = (event: MessageEvent<string>) => {
@@ -20,12 +19,6 @@ export const App: FunctionComponent = () => {
   }
 
   useEffect(() => {
-    let canvas = document.getElementById('canvas') as HTMLCanvasElement
-    if(canvas) {
-      canvas.width=canvas. clientWidth*window.devicePixelRatio;
-      canvas.height=canvas.clientHeight*window.devicePixelRatio; 
-    }
-
     window.addEventListener('message', (event: MessageEvent<string>) => {
       handleMessagesFromExtension(event)
     })
@@ -40,3 +33,5 @@ export const App: FunctionComponent = () => {
     </div>
   )
 }
+
+export default App

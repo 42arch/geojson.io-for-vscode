@@ -8,7 +8,6 @@ interface IPorps {
   properties: GeoJsonProperties,
   info: {[name: string]: any} | null,
   updateFeature: (properties: GeoJsonProperties) => void,
-  cancel: () => void
 }
 
 const genDefaultProps = (type: GeoJsonGeometryTypes, props: GeoJsonProperties) => {
@@ -88,7 +87,7 @@ const PropInput: FunctionComponent<{ keyStr: string, value: any, update:(key: st
   }
 }
 
-const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateFeature, cancel }) => {
+const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateFeature }) => {
 
   const props = genDefaultProps(type, properties)
 
@@ -127,7 +126,7 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateF
     newRowList.splice(idx, 1, row)
   }
 
-  const beforeUpdate = (props: GeoJsonProperties, newPropsList: Array<{key: string, value: any}>) => {
+  const handleUpdate = (props: GeoJsonProperties, newPropsList: Array<{key: string, value: any}>) => {
     newPropsList.forEach(item => {
       const newProp: GeoJsonProperties = {}
       newProp[item.key] = item.value
@@ -222,7 +221,7 @@ const PropsPopup: FunctionComponent<IPorps> = ({ type, properties, info, updateF
           </div>
         </div>
         <div className="btns">
-          <button id="save-btn" onClick={(e) => { beforeUpdate(props, newRowList) }}>Save</button>
+          <button id="save-btn" onClick={() => { handleUpdate(props, newRowList) }}>Save</button>
         </div>
       </div>
     </div>

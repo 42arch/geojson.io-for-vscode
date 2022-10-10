@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react"
+import React, { FunctionComponent, useContext, useEffect, useRef } from "react"
 import ReactDOM from "react-dom"
 import * as L from "leaflet"
 import { FeatureGroup, Map, GeoJSON, Layer } from "leaflet"
@@ -28,6 +28,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
 
   useEffect(() => {
     if(geojson) {
+      // must create geojsonLayer first!
       createGeoJSONLayer(geojson, true)
     }
     if(map.current) {
@@ -165,16 +166,14 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
           layer.bindPopup(popup)
           
           const featureInfo = calcFeature(feature)
-  
           ReactDOM.render(
-            <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p: GeoJsonProperties) => {updateFeature(feature, p)}} cancel={() => { popup.closePopup() }}/>,
+            <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p) => {updateFeature(feature, p)}} />,
             popupNode
           )
         }
       })
       map.current?.addLayer(editLayer.current)
     } catch (error) {
-      console.log(2222, { type: 'error', data: String(error) })
       vscode.postMessage({ type: 'error', data: String(error) })
     }
   }
@@ -188,9 +187,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   }
 
   return (
-    <>
-      <div id="map" className="map"></div>
-    </>
+    <div id="map" className="map"></div>
   )
 }
 
