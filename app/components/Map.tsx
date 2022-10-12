@@ -71,26 +71,8 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
       createGeoJSONLayer(s)
     })
 
-    map.current.on('pm:edit', (e) => {
-      postData()
-    })
+    editLayer.current.on('pm:edit', postData).on('pm:drag', postData).on('pm:remove', postData)
 
-    map.current.on('pm:drag', (e) => {
-      console.log('drag')
-      postData()
-    })
-    map.current.on('pm:dragstart', (e) => {
-      console.log('drag start')
-      postData()
-    })
-    map.current.on('pm:dragend', (e) => {
-      console.log('drag end')
-      postData()
-    })
-
-    map.current.on('pm:remove', (e) => {
-      postData()
-    })
   }
 
   function postData() {
