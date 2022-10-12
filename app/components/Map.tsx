@@ -1,8 +1,9 @@
-import React, { FunctionComponent, useContext, useEffect, useRef } from "react"
+import React, { FunctionComponent, useEffect, useRef } from "react"
 import ReactDOM from "react-dom"
 import * as L from "leaflet"
 import { FeatureGroup, Map, GeoJSON, Layer } from "leaflet"
 import 'leaflet-draw'
+import '@geoman-io/leaflet-geoman-free'
 import 'esri-leaflet'
 import { vectorBasemapLayer } from 'esri-leaflet-vector'
 import getBbox from "@turf/bbox"
@@ -27,6 +28,10 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   const editLayer = useRef<FeatureGroup>(new L.FeatureGroup())
 
   useEffect(() => {
+    init(geojson)
+  }, [geojson])
+
+  function init(geojson: string) {
     if(geojson) {
       // must create geojsonLayer first!
       createGeoJSONLayer(geojson, true)
@@ -51,63 +56,49 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
     L.control.layers(vectorTiles).addTo(map.current)
     vectorTiles.Default.addTo(map.current)
 
-    const option: L.Control.DrawConstructorOptions = {
+    map.current.pm.addControls({
       position: 'topright',
-      draw: {
-        circle: false,
-        circlemarker: false,
-        polyline: {
-          shapeOptions: {
-            color: '#555555', opacity: 1
-          }
-        },
-        polygon: {
-          allowIntersection: false,
-          drawError: {
-            color: '#e1e100',
-            message: '<strong>Oh snap!<strong> you can\'t draw that!'
-          },
-          shapeOptions: {
-            fillColor: '#555555', fillOpacity: 0.5, stroke: true, color: '#555555', opacity: 1, weight: 2
-          }
-        },
-        marker: {
-          icon: pointIcon
-        },
-        rectangle: {
-          shapeOptions: {
-            fillColor: '#555555', fillOpacity: 0.5, stroke: true, color: '#555555', opacity: 1, weight: 2
-          }
-        }
-      },
-      edit: {
-        featureGroup: editLayer.current, //REQUIRED!!
-        remove: true
-      }
-    }
-    const drawControl = new L.Control.Draw(option)
-    map.current && map.current.addControl(drawControl)
+      drawControls: true,
+      editControls: true,
+      optionsControls: true,
+      customControls: true,
+      oneBlock: true,
+      cutPolygon: false
+    })
 
-    map.current.on('draw:created', (e) => {
+    map.current.on('pm:create', (e) => {
       editLayer.current.addLayer(e.layer)
-      const curGeoJSONData = editLayer.current.toGeoJSON()
-      const s = JSON.stringify(curGeoJSONData)
-      vscode.postMessage({ type: 'data', data: s })
+      const s = postData()
       createGeoJSONLayer(s)
     })
 
-    map.current.on('draw:edited', (e) => {
-      const curGeoJSONData = editLayer.current.toGeoJSON()
-      vscode.postMessage({ type: 'data', data: JSON.stringify(curGeoJSONData) })
+    map.current.on('pm:edit', (e) => {
+      postData()
     })
 
-    map.current.on('draw:deleted', (e) => {
-      const curGeoJSONData = editLayer.current.toGeoJSON()
-      vscode.postMessage({ type: 'data', data: JSON.stringify(curGeoJSONData) })
+    map.current.on('pm:drag', (e) => {
+      console.log('drag')
+      postData()
+    })
+    map.current.on('pm:dragstart', (e) => {
+      console.log('drag start')
+      postData()
+    })
+    map.current.on('pm:dragend', (e) => {
+      console.log('drag end')
+      postData()
     })
 
-  }, [geojson])
+    map.current.on('pm:remove', (e) => {
+      postData()
+    })
+  }
 
+  function postData() {
+    const curGeoJSONData = editLayer.current.toGeoJSON()
+    vscode.postMessage({ type: 'data', data: JSON.stringify(curGeoJSONData) })
+    return JSON.stringify(curGeoJSONData)
+  }
 
   function createGeoJSONLayer(geojsonStr: string, zoom: boolean = false) {
     if(editLayer.current) {
@@ -180,10 +171,8 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
 
   const updateFeature = (feature: Feature, properties: GeoJsonProperties) => {
     feature.properties = properties
-    const curGeoJSONData = editLayer.current.toGeoJSON()
-    const s = JSON.stringify(curGeoJSONData)
+    const s = postData()
     createGeoJSONLayer(s)
-    vscode.postMessage({ type: 'data', data: s })
   }
 
   return (
