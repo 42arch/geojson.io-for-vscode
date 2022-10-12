@@ -2,7 +2,6 @@ import React, { FunctionComponent, useEffect, useRef } from "react"
 import ReactDOM from "react-dom"
 import * as L from "leaflet"
 import { FeatureGroup, Map, GeoJSON, Layer } from "leaflet"
-import 'leaflet-draw'
 import '@geoman-io/leaflet-geoman-free'
 import 'esri-leaflet'
 import { vectorBasemapLayer } from 'esri-leaflet-vector'
