@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.4.8...v0.5.0) (2022-10-12)
+
+
+### Features
+
+* **app:** using geoman as the editing tools ([5e464ef](https://github.com/re0x2a/geojson.io-for-vscode/commit/5e464ef3d7addea62709e89c648a8e9cd52aded0)), closes [#29](https://github.com/re0x2a/geojson.io-for-vscode/issues/29)
+
 ### [0.4.8](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.4.7...v0.4.8) (2022-09-19)
 
 
