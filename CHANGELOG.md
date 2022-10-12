@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.5.0...v0.5.1) (2022-10-12)
+
+
+### Bug Fixes
+
+* edit, drag and remove not working ([b4af756](https://github.com/re0x2a/geojson.io-for-vscode/commit/b4af7565ff5968667c546dc1eca351468d4b60bc))
+
 ## [0.5.0](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.4.8...v0.5.0) (2022-10-12)
 
 
