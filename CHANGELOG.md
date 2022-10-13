@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.2](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.5.1...v0.5.2) (2022-10-13)
+
+
+### Features
+
+* set default styles and remove useless control bars ([059faf3](https://github.com/re0x2a/geojson.io-for-vscode/commit/059faf31a120a1c2c8f933346add17e10c19937c))
+
 ### [0.5.1](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.5.0...v0.5.1) (2022-10-12)
 
 
