@@ -15,6 +15,8 @@ interface IProps {
   geojson: string
 }
 
+const DefaultColor = '#555555'
+
 const pointIcon = L.icon({
   iconUrl: `${ASSET_URL}/pin-m+7e7e7e.png?access_token=${TOKEN}`,
 })
@@ -55,12 +57,28 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
     L.control.layers(vectorTiles).addTo(map.current)
     vectorTiles.Default.addTo(map.current)
 
+    map.current.pm.setGlobalOptions({
+      templineStyle: {
+        color: DefaultColor,
+      },
+      hintlineStyle: {
+        color: DefaultColor
+      },
+      pathOptions: {
+        color: DefaultColor,
+        fillColor: DefaultColor,
+        fillOpacity: 0.5,
+      }
+    })
     map.current.pm.addControls({
       position: 'topright',
       drawControls: true,
       editControls: true,
       optionsControls: true,
       customControls: true,
+      drawMarker: false,
+      drawCircle: false,
+      drawText: false,
       oneBlock: true,
       cutPolygon: false
     })
@@ -70,9 +88,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
       const s = postData()
       createGeoJSONLayer(s)
     })
-
     editLayer.current.on('pm:edit', postData).on('pm:drag', postData).on('pm:remove', postData)
-
   }
 
   function postData() {
@@ -103,17 +119,17 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
             case 'Polygon':
             case 'MultiPolygon':
               return {
-                fillColor: props['fill'] ? props['fill'] : '#555555',
+                fillColor: props['fill'] ? props['fill'] : DefaultColor,
                 fillOpacity: props['fill-opacity'] ? props['fill-opacity'] : 0.5,
                 stroke: true,
-                color: props['stroke'] ? props['stroke'] : '#555555',
+                color: props['stroke'] ? props['stroke'] : DefaultColor,
                 opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
                 weight: props['stroke-width'] ? props['stroke-width'] : 2
               }
             case 'LineString':
             case 'MultiLineString':
               return {
-                color: props['stroke'] ? props['stroke'] : '#555555',
+                color: props['stroke'] ? props['stroke'] : DefaultColor,
                 opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
                 weight: props['stroke-width'] ? props['stroke-width'] : 2
               }
