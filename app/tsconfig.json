@@ -7,10 +7,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "allowJs": true,
-    "lib": [
-      "ES6",
-      "DOM"
-    ],
+    "lib": ["ES6", "DOM"],
     "rootDir": "./",
     "moduleResolution": "node"
   }

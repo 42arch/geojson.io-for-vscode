@@ -1,15 +1,15 @@
 import * as vscode from 'vscode'
-import Ajv from "ajv"
+import Ajv from 'ajv'
 import schema from './schema.json'
 
 export function validate(geojsonStr: string): boolean {
-   vscode.window.showInformationMessage('validate xxx', schema)
+  vscode.window.showInformationMessage('validate xxx', schema)
   // allow empty string
-  if(geojsonStr === '') {
+  if (geojsonStr === '') {
     return true
   }
   try {
-    let geojson = JSON.parse(geojsonStr)
+    const geojson = JSON.parse(geojsonStr)
     const ajv = new Ajv()
     const isValid = ajv.compile(schema)
     const res = isValid(geojson)
@@ -17,6 +17,5 @@ export function validate(geojsonStr: string): boolean {
   } catch (error) {
     throw Error(error)
   }
-   vscode.window.showInformationMessage('validate ytyyy', geojsonStr)
-
+  vscode.window.showInformationMessage('validate ytyyy', geojsonStr)
 }

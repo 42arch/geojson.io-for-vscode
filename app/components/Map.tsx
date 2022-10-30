@@ -1,15 +1,21 @@
-import React, { FunctionComponent, useEffect, useRef } from "react"
-import ReactDOM from "react-dom"
-import * as L from "leaflet"
-import { FeatureGroup, Map, GeoJSON, Layer } from "leaflet"
+import React, { FunctionComponent, useEffect, useRef } from 'react'
+import ReactDOM from 'react-dom'
+import * as L from 'leaflet'
+import { FeatureGroup, Map, GeoJSON, Layer } from 'leaflet'
 import '@geoman-io/leaflet-geoman-free'
 import 'esri-leaflet'
 import { vectorBasemapLayer } from 'esri-leaflet-vector'
-import getBbox from "@turf/bbox"
-import PropsPopup from "./PropsPopup"
-import { Feature, GeoJsonProperties } from "geojson"
-import calcFeature from "../utils/calc"
-import { ASSET_URL, genMarkerIcon, TOKEN, API_KEY, LAYER_LIST } from "../utils/constant"
+import getBbox from '@turf/bbox'
+import PropsPopup from './PropsPopup'
+import { Feature, GeoJsonProperties } from 'geojson'
+import calcFeature from '../utils/calc'
+import {
+  ASSET_URL,
+  genMarkerIcon,
+  TOKEN,
+  API_KEY,
+  LAYER_LIST
+} from '../utils/constant'
 
 interface IProps {
   geojson: string
@@ -18,7 +24,7 @@ interface IProps {
 const DefaultColor = '#555555'
 
 const pointIcon = L.icon({
-  iconUrl: `${ASSET_URL}/pin-m+7e7e7e.png?access_token=${TOKEN}`,
+  iconUrl: `${ASSET_URL}/pin-m+7e7e7e.png?access_token=${TOKEN}`
 })
 
 const vectorTiles: { [name: string]: Layer } = {}
@@ -33,16 +39,16 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
   }, [geojson])
 
   function init(geojson: string) {
-    if(geojson) {
+    if (geojson) {
       // must create geojsonLayer first!
       createGeoJSONLayer(geojson, true)
     }
-    if(map.current) {
+    if (map.current) {
       return
     }
     map.current = L.map('map', {
       center: [0, 0],
-      zoom: 2,
+      zoom: 2
     })
 
     vectorTiles['Default'] = vectorBasemapLayer(null, {
@@ -59,7 +65,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
 
     map.current.pm.setGlobalOptions({
       templineStyle: {
-        color: DefaultColor,
+        color: DefaultColor
       },
       hintlineStyle: {
         color: DefaultColor
@@ -67,7 +73,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
       pathOptions: {
         color: DefaultColor,
         fillColor: DefaultColor,
-        fillOpacity: 0.5,
+        fillOpacity: 0.5
       }
     })
     map.current.pm.addControls({
@@ -88,7 +94,10 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
       const s = postData()
       createGeoJSONLayer(s)
     })
-    editLayer.current.on('pm:edit', postData).on('pm:drag', postData).on('pm:remove', postData)
+    editLayer.current
+      .on('pm:edit', postData)
+      .on('pm:drag', postData)
+      .on('pm:remove', postData)
   }
 
   function postData() {
@@ -97,30 +106,38 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
     return JSON.stringify(curGeoJSONData)
   }
 
-  function createGeoJSONLayer(geojsonStr: string, zoom: boolean = false) {
-    if(editLayer.current) {
+  function createGeoJSONLayer(geojsonStr: string, zoom = false) {
+    if (editLayer.current) {
       map.current?.removeLayer(editLayer.current)
       editLayer.current.clearLayers()
     }
     const geojsonData = JSON.parse(geojsonStr)
     if (zoom) {
       const [minX, minY, maxX, maxY] = getBbox(geojsonData)
-      if(![minX, minY, maxX, maxY].includes(Infinity) || ![minX, minY, maxX, maxY].includes(-Infinity)) {
-        let bounds = L.latLngBounds(L.latLng(minY, minX), L.latLng(maxY, maxX))
+      if (
+        ![minX, minY, maxX, maxY].includes(Infinity) ||
+        ![minX, minY, maxX, maxY].includes(-Infinity)
+      ) {
+        const bounds = L.latLngBounds(
+          L.latLng(minY, minX),
+          L.latLng(maxY, maxX)
+        )
         map.current && map.current.flyToBounds(bounds)
       }
     }
 
     try {
       geojsonLayer.current = L.geoJSON(geojsonData, {
-        style: function(feature) {
+        style: function (feature) {
           const props = feature?.properties
           switch (feature?.geometry.type) {
             case 'Polygon':
             case 'MultiPolygon':
               return {
                 fillColor: props['fill'] ? props['fill'] : DefaultColor,
-                fillOpacity: props['fill-opacity'] ? props['fill-opacity'] : 0.5,
+                fillOpacity: props['fill-opacity']
+                  ? props['fill-opacity']
+                  : 0.5,
                 stroke: true,
                 color: props['stroke'] ? props['stroke'] : DefaultColor,
                 opacity: props['stroke-opacity'] ? props['stroke-opacity'] : 1,
@@ -135,27 +152,38 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
               }
             case 'Point':
             case 'MultiPoint':
-              return { }
+              return {}
             default:
-              return { }
+              return {}
           }
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
           const props = geoJsonPoint?.properties
-          const pointIcon = genMarkerIcon(props['marker-symbol'], props['marker-size'], props['marker-color'])
+          const pointIcon = genMarkerIcon(
+            props['marker-symbol'],
+            props['marker-size'],
+            props['marker-color']
+          )
           return L.marker(latlng, {
             icon: pointIcon
           })
         },
-        onEachFeature: function(feature: Feature, layer: L.Layer) {
+        onEachFeature: function (feature: Feature, layer: L.Layer) {
           editLayer.current.addLayer(layer)
-          const popupNode = document.createElement("div")
+          const popupNode = document.createElement('div')
           const popup = L.popup().setContent(popupNode)
           layer.bindPopup(popup)
-          
+
           const featureInfo = calcFeature(feature)
           ReactDOM.render(
-            <PropsPopup type={feature.geometry.type} properties={feature.properties} info={featureInfo} updateFeature={(p) => {updateFeature(feature, p)}} />,
+            <PropsPopup
+              type={feature.geometry.type}
+              properties={feature.properties}
+              info={featureInfo}
+              updateFeature={(p) => {
+                updateFeature(feature, p)
+              }}
+            />,
             popupNode
           )
         }
@@ -172,9 +200,7 @@ const MapCon: FunctionComponent<IProps> = ({ geojson }) => {
     createGeoJSONLayer(s)
   }
 
-  return (
-    <div id="map" className="map"></div>
-  )
+  return <div id="map" className="map"></div>
 }
 
 export default MapCon

@@ -1,23 +1,16 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"resolveJsonModule": true,
-		"esModuleInterop": true,
-		"target": "ESNEXT",
-		"outDir": "out",
-		"lib": [
-			"ESNEXT",
-			"dom"
-		],
-		"types": ["node"],
-		"moduleResolution": "node",
-		"sourceMap": true,
-		"rootDir": ".",
-		"strict": false   /* enable all strict type-checking options */
-	},
-	"exclude": [
-		"node_modules",
-		".vscode-test",
-		"app"
-	]
+  "compilerOptions": {
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "ESNEXT",
+    "outDir": "out",
+    "lib": ["ESNEXT", "dom"],
+    "types": ["node"],
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "rootDir": ".",
+    "strict": false /* enable all strict type-checking options */
+  },
+  "exclude": ["node_modules", ".vscode-test", "app"]
 }

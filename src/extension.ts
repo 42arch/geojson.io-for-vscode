@@ -4,11 +4,16 @@ import { ViewLoader } from './view/ViewLoader'
 
 function geojsonTest(geojsonStr: string) {
   try {
-    if(geojsonStr === '') {
+    if (geojsonStr === '') {
       return true
     }
-    let geojsonObj = JSON.parse(geojsonStr)
-    if (geojsonObj.type && geojsonObj.type === "FeatureCollection" && geojsonObj.features && Array.isArray(geojsonObj.features)) {
+    const geojsonObj = JSON.parse(geojsonStr)
+    if (
+      geojsonObj.type &&
+      geojsonObj.type === 'FeatureCollection' &&
+      geojsonObj.features &&
+      Array.isArray(geojsonObj.features)
+    ) {
       return true
     } else {
       return false
@@ -19,26 +24,33 @@ function geojsonTest(geojsonStr: string) {
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-  let openWebview = vscode.commands.registerCommand('geojson-io-for-vscode.viewOnMap', (uri: vscode.Uri) => {
-    try {
-      const fileUri = uri || vscode.window.activeTextEditor.document.uri
-      if(fileUri.fsPath) {
-        readFile(fileUri.fsPath, (err, data) => {
-          const s = data.toString()
-          if (geojsonTest(s)) {
-            ViewLoader.showWebview(context)
-            ViewLoader.postMessageToWebview(s)
-          } else {
-            vscode.window.showErrorMessage('Oops! The data you trying to view is not standard feature-collection type, please check it again!')
-          }
-        })
-      } else {
-        vscode.window.showErrorMessage('No geojson file to view!')
+  const openWebview = vscode.commands.registerCommand(
+    'geojson-io-for-vscode.viewOnMap',
+    (uri: vscode.Uri) => {
+      try {
+        const fileUri = uri || vscode.window.activeTextEditor.document.uri
+        if (fileUri.fsPath) {
+          readFile(fileUri.fsPath, (err, data) => {
+            const s = data.toString()
+            if (geojsonTest(s)) {
+              ViewLoader.showWebview(context)
+              ViewLoader.postMessageToWebview(s)
+            } else {
+              vscode.window.showErrorMessage(
+                'Oops! The data you trying to view is not standard feature-collection type, please check it again!'
+              )
+            }
+          })
+        } else {
+          vscode.window.showErrorMessage('No geojson file to view!')
+        }
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          "The extension can't recognize this file!"
+        )
       }
-    } catch (error) {
-      vscode.window.showErrorMessage("The extension can't recognize this file!")
     }
-  })
+  )
   context.subscriptions.push(openWebview)
 
   context.subscriptions.push(
@@ -48,4 +60,5 @@ export async function activate(context: vscode.ExtensionContext) {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function deactivate() {}

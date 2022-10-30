@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   padding: 0;
@@ -26,7 +27,6 @@ html, body {
         }
 
         .leaflet-control-layers {
-          
           &.leaflet-control-layers-expanded {
             padding: 4px;
           }
@@ -37,7 +37,6 @@ html, body {
             height: 30px;
           }
         }
-
 
         /* leaflet popup style */
         .leaflet-popup-content {

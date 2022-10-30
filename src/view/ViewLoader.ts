@@ -1,8 +1,8 @@
-import * as vscode from "vscode"
-import * as path from "path"
+import * as vscode from 'vscode'
+import * as path from 'path'
 
 type Message = {
-  type: 'error' | 'info' | 'warning' | 'data',
+  type: 'error' | 'info' | 'warning' | 'data'
   data: string
 }
 
@@ -16,44 +16,64 @@ export class ViewLoader {
     this.context = context
     this.disposables = []
 
-    this.panel = vscode.window.createWebviewPanel('mapApp', 'Map View', vscode.ViewColumn.Beside, {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-      localResourceRoots: [vscode.Uri.file(path.join(this.context.extensionPath, 'out', 'app'))]
-    })
+    this.panel = vscode.window.createWebviewPanel(
+      'mapApp',
+      'Map View',
+      vscode.ViewColumn.Beside,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true,
+        localResourceRoots: [
+          vscode.Uri.file(path.join(this.context.extensionPath, 'out', 'app'))
+        ]
+      }
+    )
 
     this.renderWebview()
 
-    this.panel.webview.onDidReceiveMessage((message: Message) => {
-      switch (message.type) {
-        case 'data':
-          this.replaceTextContent(message.data)
-          break
-        case 'error':
-          vscode.window.showErrorMessage(message.data)
-          break
-        case 'warning':
-          vscode.window.showWarningMessage(message.data)
-          break
-        default:
-          break
-      }
-    }, null, this.disposables)
+    this.panel.webview.onDidReceiveMessage(
+      (message: Message) => {
+        switch (message.type) {
+          case 'data':
+            this.replaceTextContent(message.data)
+            break
+          case 'error':
+            vscode.window.showErrorMessage(message.data)
+            break
+          case 'warning':
+            vscode.window.showWarningMessage(message.data)
+            break
+          default:
+            break
+        }
+      },
+      null,
+      this.disposables
+    )
 
-    this.panel.onDidDispose(() => {
-      this.dispose()
-    }, null, this.disposables)
+    this.panel.onDidDispose(
+      () => {
+        this.dispose()
+      },
+      null,
+      this.disposables
+    )
   }
 
   private replaceTextContent(textContent: string) {
     const textEditor = vscode.window.visibleTextEditors[0]
-    if(!textEditor) {
+    if (!textEditor) {
       return
     }
     const firstLine = textEditor.document.lineAt(0)
-    const lastLine = textEditor.document.lineAt(textEditor.document.lineCount - 1)
+    const lastLine = textEditor.document.lineAt(
+      textEditor.document.lineCount - 1
+    )
     const textRange = new vscode.Range(
-      0, firstLine.range.start.character, textEditor.document.lineCount-1, lastLine.range.end.character
+      0,
+      firstLine.range.start.character,
+      textEditor.document.lineCount - 1,
+      lastLine.range.end.character
     )
 
     textEditor.edit((editBuilder) => {
@@ -72,8 +92,10 @@ export class ViewLoader {
 
   static showWebview(context: vscode.ExtensionContext) {
     const ctx = this
-    const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined
-    if(ctx.currentPanel) {
+    const column = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.viewColumn
+      : undefined
+    if (ctx.currentPanel) {
       ctx.currentPanel.reveal(column)
     } else {
       ctx.currentPanel = new ctx(context).panel
@@ -89,7 +111,7 @@ export class ViewLoader {
     ViewLoader.currentPanel = undefined
     while (this.disposables.length) {
       const x = this.disposables.pop()
-      if(x) {
+      if (x) {
         x.dispose
       }
     }
@@ -97,7 +119,9 @@ export class ViewLoader {
 
   render() {
     const bundleScriptPath = this.panel.webview.asWebviewUri(
-      vscode.Uri.file(path.join(this.context.extensionPath, 'out', 'app', 'bundle.js'))
+      vscode.Uri.file(
+        path.join(this.context.extensionPath, 'out', 'app', 'bundle.js')
+      )
     )
 
     return `
