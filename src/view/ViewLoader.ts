@@ -82,7 +82,9 @@ export class ViewLoader {
   }
 
   private formatJSONString(textContent: string) {
-    return JSON.stringify(JSON.parse(textContent), null, 2)
+    const config = vscode.workspace.getConfiguration()
+    const tabSize = Number(config.get('editor.tabSize')) || 2
+    return JSON.stringify(JSON.parse(textContent), null, tabSize)
   }
 
   private renderWebview() {
