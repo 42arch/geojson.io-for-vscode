@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.3](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.5.2...v0.5.3) (2023-03-22)
+
+
+### Features
+
+* get tabsize from vscode settings ([7ae7921](https://github.com/re0x2a/geojson.io-for-vscode/commit/7ae7921401b4f8ac46a6baa3ecfc7ed661a5e5fa))
+
 ### [0.5.2](https://github.com/re0x2a/geojson.io-for-vscode/compare/v0.5.1...v0.5.2) (2022-10-13)
 
 
