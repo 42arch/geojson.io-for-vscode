@@ -1,0 +1,112 @@
+.props-popup {
+  min-width: 180px;
+  min-height: 60px;
+  z-index: 99;
+
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+    overflow: auto;
+    border-bottom: 1px solid #ccc;
+
+    tr {
+      td {
+        border: 1px solid #ccc;
+        padding: 0 3px;
+      }
+    }
+
+    input {
+      width: 100px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      height: 24px;
+      line-height: 24px;
+
+      &:focus-visible {
+        border: 0;
+        outline: 0;
+      }
+    }
+  }
+
+  .properties-table {
+    .props-opts {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      #add-row {
+        width: 35%;
+        display: flex;
+        align-items: center;
+      }
+
+      #add-row span {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .content {
+    padding: 10px 10px 0 10px;
+  }
+
+  .footer {
+    .tabs {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+
+      .tab_item {
+        margin-top: 10px;
+        width: 50%;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        background: #eee;
+
+        &.active {
+          background: transparent;
+          border-left: 1px solid transparent;
+          border-right: 1px solid transparent;
+          border-top: 1px solid transparent;
+        }
+      }
+    }
+
+    .opts {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      margin-top: 6px;
+      margin-bottom: 6px;
+      height: 32px;
+
+      button {
+        cursor: pointer;
+        border: 0;
+        border-radius: 1px;
+        background-color: #59aae7;
+        color: #ffffff;
+      }
+
+      .save-btn {
+        padding: 5px;
+        border-radius: 3px;
+        color: white;
+        background: #34495e;
+
+        &:hover {
+          background: #2980b9;
+        }
+      }
+    }
+  }
+}

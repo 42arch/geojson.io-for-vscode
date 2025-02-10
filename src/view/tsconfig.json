@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "strict": true,
-    "module": "commonjs",
-    "types": ["node"],
-    "jsx": "react",
+    "module": "ESNext",
+    "target": "ES2022",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "sourceMap": true,
     "allowJs": true,
     "lib": ["ES6", "DOM"],
     "rootDir": "./",
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   }
 }

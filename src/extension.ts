@@ -1,64 +1,42 @@
-import { readFile, promises as fs } from 'fs'
-import * as vscode from 'vscode'
-import { ViewLoader } from './view/ViewLoader'
+import {
+  ExtensionContext,
+  TextDocument,
+  commands,
+  window,
+  workspace
+} from 'vscode'
+import ViewPanel from './view-panel'
 
-function geojsonTest(geojsonStr: string) {
-  try {
-    if (geojsonStr === '') {
-      return true
-    }
-    const geojsonObj = JSON.parse(geojsonStr)
-    if (
-      geojsonObj.type &&
-      geojsonObj.type === 'FeatureCollection' &&
-      geojsonObj.features &&
-      Array.isArray(geojsonObj.features)
-    ) {
-      return true
-    } else {
-      return false
-    }
-  } catch (error) {
-    return false
-  }
-}
-
-export async function activate(context: vscode.ExtensionContext) {
-  const openWebview = vscode.commands.registerCommand(
-    'geojson-io-for-vscode.viewOnMap',
-    (uri: vscode.Uri) => {
+export function activate(context: ExtensionContext) {
+  const openMapView = commands.registerCommand(
+    'geojson-toolkit.preview-geojson',
+    () => {
       try {
-        const fileUri = uri || vscode.window.activeTextEditor.document.uri
-        if (fileUri.fsPath) {
-          readFile(fileUri.fsPath, (err, data) => {
-            const s = data.toString()
-            if (geojsonTest(s)) {
-              ViewLoader.showWebview(context)
-              ViewLoader.postMessageToWebview(s)
-            } else {
-              vscode.window.showErrorMessage(
-                'Oops! The data you trying to view is not standard feature-collection type, please check it again!'
-              )
-            }
-          })
+        const editor = window.activeTextEditor
+        if (editor) {
+          const text = editor.document.getText()
+          ViewPanel.open(context)
+          ViewPanel.postMessageToWebview(text)
         } else {
-          vscode.window.showErrorMessage('No geojson file to view!')
+          window.showWarningMessage(
+            '🌏 You should open your geojson file on the editor!'
+          )
         }
       } catch (error) {
-        vscode.window.showErrorMessage(
-          "The extension can't recognize this file!"
-        )
+        window.showErrorMessage('🌏 Failed to preview this file! ' + error)
       }
     }
   )
-  context.subscriptions.push(openWebview)
 
-  context.subscriptions.push(
-    vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
-      ViewLoader.postMessageToWebview(document.getText())
-    })
+  const saveGeojson = workspace.onDidSaveTextDocument(
+    (document: TextDocument) => {
+      const text = document.getText()
+      ViewPanel.postMessageToWebview(text)
+    }
   )
+
+  context.subscriptions.push(openMapView)
+  context.subscriptions.push(saveGeojson)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function deactivate() {}

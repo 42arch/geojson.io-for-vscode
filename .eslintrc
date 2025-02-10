@@ -1,0 +1,39 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "react-hooks", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "@typescript-eslint/no-this-alias": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/semi": "off",
+    "curly": "warn",
+    "eqeqeq": "warn",
+    "no-throw-literal": "warn",
+    "semi": "off",
+    "prefer-const": "error",
+    "no-console": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto",
+        "singleQuote": true
+      }
+    ]
+  },
+  "ignorePatterns": ["out", "dist", "node_modules", "**/*.d.ts"]
+}

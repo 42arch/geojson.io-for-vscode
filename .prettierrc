@@ -3,7 +3,7 @@
   "singleQuote": true,
   "tabWidth": 2,
   "printWidth": 80,
-  "endOfLine": "lf",
+  "endOfLine": "auto",
   "trailingComma": "none",
   "jsxBracketSameLine": true
 }

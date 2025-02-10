@@ -1,41 +1,71 @@
-<h1 align="center"> GeoJSON.IO for VSCode </h1>
+# geojson-toolkit README
 
-<a><img src="https://img.shields.io/visual-studio-marketplace/i/swallow.geojson-io-for-vscode?style=for-the-badge" alt="install"/></a>
-<a><img src="https://img.shields.io/visual-studio-marketplace/d/swallow.geojson-io-for-vscode?style=for-the-badge" alt="download"/></a>
-<a><img src="https://img.shields.io/visual-studio-marketplace/release-date/swallow.geojson-io-for-vscode?style=for-the-badge" alt="release"/></a>
-<a><img src="https://img.shields.io/visual-studio-marketplace/last-updated/swallow.geojson-io-for-vscode?style=for-the-badge" alt="update"/></a>
-<a><img src="https://img.shields.io/visual-studio-marketplace/v/swallow.geojson-io-for-vscode?style=for-the-badge" alt="version"/></a>
-<a><img src="https://img.shields.io/visual-studio-marketplace/r/swallow.geojson-io-for-vscode?style=for-the-badge" alt="download"/></a>
-<a><img src="https://img.shields.io/github/workflow/status/rend42/geojson.io-for-vscode/release?event=push&style=for-the-badge" alt="build"/></a>
-
-`GeoJSON.IO for VSCode` is an open-source extension for Visual Studio Code. It simply helps you to create, preview and edit your geojson data on a map 🗺.
-
-Just like this website [geojson.io](http://geojson.io) 😍.
+This is the README for your extension "geojson-toolkit". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
-- Support real-time creating, editing, and previewing geojson data.
-- Support custom styling features.
-- Multiple base-map layers.
+Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
 
-## Usage
+For example if there is an image subfolder under your extension project workspace:
 
-1. Install this extension ofc 😀.
+\!\[feature X\]\(images/feature-x.png\)
 
-2. Open your geojson file or an empty file in VSCode, the file extension should be one of these: `.json`, `.txt`, `.geojson`.
+> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-3. There are two ways to open the map window: Press `ctrl + shift + p` to open the command palette, search `View On Map` command and press `Enter`; Or just right-click on your file window and select `View On Map` option.
+## Requirements
 
-> Tip🔈: Every time after creating or editing a feature, the data on the text editor is unsaved status, don't forget to save it manually before closed VSCode.
+If you have any requirements or dependencies, add a section describing those and how to install and configure them.
 
-## Screenshot
+## Extension Settings
 
-![screenshot](https://user-images.githubusercontent.com/20656708/174084511-5c69a506-98ba-4531-b07a-b7b2a10b0ab6.png)
+Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
-## More
+For example:
 
-If you find any bugs or have some suggestions, please make an [issue](https://github.com/42arch/geojson.io-for-vscode/issues) on the Github to let me know. And if this extension helped you, don't forget to leave a star ⭐.
+This extension contributes the following settings:
 
-## License
+- `myExtension.enable`: Enable/disable this extension.
+- `myExtension.thing`: Set to `blah` to do something.
 
-[MIT](https://github.com/42arch/geojson.io-for-vscode/blob/main/LICENSE)
+## Known Issues
+
+Calling out known issues can help limit users opening duplicate issues against your extension.
+
+## Release Notes
+
+Users appreciate release notes as you update your extension.
+
+### 1.0.0
+
+Initial release of ...
+
+### 1.0.1
+
+Fixed issue #.
+
+### 1.1.0
+
+Added features X, Y, and Z.
+
+---
+
+## Following extension guidelines
+
+Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+
+- [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+
+## Working with Markdown
+
+You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+
+- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
+- Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
+- Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+
+## For more information
+
+- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
+- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+
+**Enjoy!**
