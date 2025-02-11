@@ -2,7 +2,6 @@ import { IControl, Map } from 'mapbox-gl'
 import edit from '../../assets/edit.svg'
 
 export class EditControl implements IControl {
-  private cb: () => void
   private map: Map | undefined
   private _container: HTMLElement | undefined
 
@@ -35,17 +34,8 @@ export class EditControl implements IControl {
   }
 
   onClick(cb: () => void) {
-    this.cb = cb
     this._container?.addEventListener('click', cb)
   }
-
-  // offClick() {
-  //   // if (this.cb) {
-  //   //   this._container?.removeEventListener('click', this.cb)
-  //   // }
-
-  //   this._container?.replaceWith(this._container.cloneNode(true))
-  // }
 }
 
 export class SaveCancelControl {

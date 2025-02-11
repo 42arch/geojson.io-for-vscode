@@ -16,6 +16,7 @@ import {
 } from '../utils/constant'
 import { Row } from '../utils/types'
 import './props-popup.less'
+import measure from '../utils/measure'
 
 interface Props {
   data: GeoJSONFeature
@@ -191,19 +192,24 @@ function PropertiesTable({
 }
 
 // Measure Info Table
-function InfoTable() {
+function InfoTable({ data }: { data: GeoJSONFeature }) {
+  const info = measure(data)
+  console.log('data info', data, info)
+
   return (
     <div className="properties-table">
       <table className="table">
         <tbody>
-          <tr className="item-row">
-            <td>
-              <input type="text" disabled />
-            </td>
-            <td>
-              <input type="text" disabled />
-            </td>
-          </tr>
+          {Object.keys(info).map((field, index) => (
+            <tr className="item-row" key={index}>
+              <td>
+                <input type="text" defaultValue={field} disabled />
+              </td>
+              <td>
+                <input type="text" defaultValue={info[field]} disabled />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -263,7 +269,7 @@ function PropsPopup({ data, onSave }: Props) {
             }}
           />
         ) : (
-          <InfoTable />
+          <InfoTable data={data} />
         )}
       </div>
       <div className="footer">
