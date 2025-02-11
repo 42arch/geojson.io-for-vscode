@@ -23,7 +23,7 @@ function App() {
       json.features.forEach((feature) => {
         feature.properties = {
           ...feature.properties,
-          _id: feature.properties ? feature.properties['_id'] : nanoid()
+          _id: nanoid()
         }
       })
       setGeojson(json)

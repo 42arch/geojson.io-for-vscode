@@ -1,5 +1,20 @@
-import { useEffect, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { GeoJSONFeature } from 'mapbox-gl'
+import { GeoJsonGeometryTypes } from 'geojson'
+import {
+  DEFAULT_FILL_STYLE_ROWS,
+  DEFAULT_LINE_STYLE_ROWS,
+  DEFAULT_POINT_STYLE_ROWS,
+  STYLE_FIELDS
+} from '../utils/constant'
+import { Row } from '../utils/types'
 import './props-popup.less'
 
 interface Props {
@@ -10,152 +25,243 @@ interface Props {
   ) => void
 }
 
-// properties table
+// Value Input
+const ValueInput = forwardRef<
+  HTMLInputElement,
+  {
+    field: string
+    value: string | number
+    onChange: (value: string | number) => void
+  }
+>(({ field, value, onChange }, ref) => {
+  switch (field) {
+    case 'stroke':
+    case 'fill':
+      return (
+        <input
+          type="color"
+          defaultValue={value}
+          ref={ref}
+          onChange={(e) => {
+            onChange(e.target.value)
+          }}
+        />
+      )
+    case 'stroke-width':
+      return (
+        <input
+          type="number"
+          min="0"
+          defaultValue={value}
+          ref={ref}
+          onChange={(e) => {
+            onChange(e.target.valueAsNumber)
+          }}
+        />
+      )
+    case 'stroke-opacity':
+    case 'fill-opacity':
+      return (
+        <input
+          type="number"
+          min={0}
+          max={1}
+          step={0.1}
+          defaultValue={value}
+          ref={ref}
+          onChange={(e) => {
+            onChange(e.target.valueAsNumber)
+          }}
+        />
+      )
+    default:
+      return (
+        <input
+          type="text"
+          defaultValue={value}
+          ref={ref}
+          onChange={(e) => {
+            onChange(e.target.value)
+          }}
+        />
+      )
+  }
+})
+
+// Properties Table
 function PropertiesTable({
-  properties,
+  type,
+  rowList,
   onChange
 }: {
-  properties: GeoJSONFeature['properties']
-  onChange: (properties: GeoJSONFeature['properties']) => void
+  type: GeoJsonGeometryTypes
+  rowList: Row[]
+  onChange: (rowList: Row[]) => void
 }) {
-  const [rowList, setRowList] = useState<{ key: string; value: string }[]>([])
-
   useEffect(() => {
-    if (properties) {
-      const rows = Object.keys(properties).map((key) => ({
-        key,
-        value: properties[key]
-      }))
-      setRowList(rows)
-    }
-  }, [properties])
+    onChange(rowList)
+  }, [rowList])
+
+  const rowRefs = useRef<
+    { key: HTMLInputElement | null; value: HTMLInputElement | null }[]
+  >([])
 
   const addNewRow = () => {
-    setRowList((prev) => [...prev, { key: '', value: '' }])
+    const newRowList = [...rowList, { field: '', value: '' }]
+    onChange(newRowList)
   }
 
-  const handleRowUpdate = (index: number, key: string, value: string) => {
-    const row = rowList[index]
+  const addStyleProperties = () => {
+    const newRowList = addStyleRows(type, rowList)
+    onChange(newRowList)
+  }
 
-    row.key = key
-    row.value = value
-    if (row.key) {
-      rowList.splice(index, 1, row)
-    } else {
-      rowList.splice(index, 1)
+  const handleChange = (
+    index: number,
+    field: 'field' | 'value',
+    newValue: string | number
+  ) => {
+    const newRowList = [...rowList]
+    newRowList[index] = {
+      ...newRowList[index],
+      [field]: newValue
     }
-    // rowList.reduce((acc, cur) => {
-    //   return cur.key ? { ...acc, [cur.key]: cur.value } : acc
-    // }, {})
-    setRowList([...rowList])
-
-    console.log('row list change', key, value, rowList)
-
-    onChange(
-      rowList.reduce((acc, cur) => {
-        return cur.key ? { ...acc, [cur.key]: cur.value } : acc
-      }, {})
-    )
+    onChange(newRowList)
   }
 
   return (
     <div className="properties-table">
       <table className="table">
         <tbody>
-          {rowList.length ? (
-            rowList
-              .filter((row) => row.key !== '_id')
-              .map((row, index) => (
-                <tr className="item-row" key={index}>
-                  <td>
-                    <input
-                      type="text"
-                      defaultValue={row.key}
-                      onChange={(e) => {
-                        handleRowUpdate(index, e.target.value, row.value)
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      defaultValue={row.value}
-                      onChange={(e) => {
-                        handleRowUpdate(index, row.key, e.target.value)
-                      }}
-                    />
-                  </td>
-                </tr>
-              ))
-          ) : (
-            <tr className="item-row">
-              <td>
-                <input type="text" />
-              </td>
-              <td>
-                <input type="text" />
-              </td>
-            </tr>
-          )}
+          {rowList
+            .filter((row) => row.field !== '_id')
+            .map((row, index) => (
+              <tr className="item-row" key={index}>
+                <td>
+                  <input
+                    type="text"
+                    defaultValue={row.field}
+                    ref={(el) =>
+                      (rowRefs.current[index] = {
+                        ...rowRefs.current[index],
+                        key: el
+                      })
+                    }
+                    onChange={(e) => {
+                      handleChange(index, 'field', e.target.value)
+                    }}
+                  />
+                </td>
+                <td>
+                  <ValueInput
+                    field={row.field}
+                    value={row.value}
+                    ref={(el) =>
+                      (rowRefs.current[index] = {
+                        ...rowRefs.current[index],
+                        value: el
+                      })
+                    }
+                    onChange={(v) => {
+                      handleChange(index, 'value', v)
+                    }}
+                  />
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
       <div className="props-opts">
         <div id="add-row">
           <span onClick={addNewRow}>
-            {' '}
             <span style={{ fontSize: '18px', fontWeight: 800 }}> + </span>
             Add row
           </span>
         </div>
-        <div id="show-style-props">
-          <input
-            type="checkbox"
-            name="show-style"
-            id="show-style"
-            // checked={styleShow}
-            onChange={(e) => {
-              // handleStyleCheck(e.target.checked)
-            }}
-          />
-          <label htmlFor="show-style">Show style properties</label>
-        </div>
+        {!STYLE_FIELDS.every((field) =>
+          rowList.map((r) => r.field).includes(field)
+        ) && (
+          <span id="add-style-props" onClick={addStyleProperties}>
+            Add style properties
+          </span>
+        )}
       </div>
     </div>
   )
 }
 
+// Measure Info Table
 function InfoTable() {
-  return <div></div>
+  return (
+    <div className="properties-table">
+      <table className="table">
+        <tbody>
+          <tr className="item-row">
+            <td>
+              <input type="text" disabled />
+            </td>
+            <td>
+              <input type="text" disabled />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 function PropsPopup({ data, onSave }: Props) {
-  console.log('PropsPopup data', data)
-
   const [activeTab, setActiveTab] = useState<'properties' | 'info'>(
     'properties'
   )
 
-  const [properties, setProperties] = useState<GeoJSONFeature['properties']>(
-    data.properties
-  )
+  const id = useMemo(() => {
+    return data.properties ? data.properties['_id'] : ''
+  }, [data])
 
-  useEffect(() => {}, [activeTab])
+  const [rowList, setRowList] = useState<Row[]>([])
 
-  const handleChange = (properties: GeoJSONFeature['properties']) => {
-    console.log('handleChange xxxx', properties)
-    setProperties(properties)
-  }
+  useEffect(() => {
+    if (data.properties) {
+      const keys = Object.keys(data.properties).filter((key) => key !== '_id')
+      if (keys.length) {
+        setRowList(
+          keys.map((key) => ({
+            field: key,
+            value: data.properties ? data.properties[key] : ''
+          }))
+        )
+      } else {
+        setRowList([{ field: '', value: '' }])
+      }
+    } else {
+      setRowList([{ field: '', value: '' }])
+    }
+  }, [data])
 
-  const handleSave = () => {
-    console.log('save props', data.id, properties)
-    onSave(data.id, properties)
-  }
+  const handleSave = useCallback(() => {
+    const properties = rowList.reduce((acc, cur) => {
+      return cur.field ? { ...acc, [cur.field]: cur.value } : acc
+    }, {})
+
+    onSave(id, {
+      ...properties,
+      _id: id
+    })
+  }, [id, onSave, rowList])
 
   return (
     <div className="props-popup">
       <div className="content">
         {activeTab === 'properties' ? (
-          <PropertiesTable properties={properties} onChange={handleChange} />
+          <PropertiesTable
+            type={data.geometry.type}
+            rowList={rowList}
+            onChange={(rowList) => {
+              console.log('row list change ', rowList)
+              setRowList(rowList)
+            }}
+          />
         ) : (
           <InfoTable />
         )}
@@ -184,3 +290,30 @@ function PropsPopup({ data, onSave }: Props) {
 }
 
 export default PropsPopup
+
+function addStyleRows(type: GeoJsonGeometryTypes, rowList: Row[]) {
+  const mergeRowList = (rowList: Row[], styleRowList: Row[]) => {
+    const merged = [...rowList]
+    styleRowList.forEach((row) => {
+      const exist = merged.find((r) => r.field === row.field)
+      if (!exist) {
+        merged.push(row)
+      }
+    })
+    return merged
+  }
+
+  switch (type) {
+    case 'Point':
+    case 'MultiPoint':
+      return mergeRowList(rowList, DEFAULT_POINT_STYLE_ROWS)
+    case 'LineString':
+    case 'MultiLineString':
+      return mergeRowList(rowList, DEFAULT_LINE_STYLE_ROWS)
+    case 'Polygon':
+    case 'MultiPolygon':
+      return mergeRowList(rowList, DEFAULT_FILL_STYLE_ROWS)
+    default:
+      return [...rowList]
+  }
+}

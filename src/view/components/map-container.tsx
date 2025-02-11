@@ -11,6 +11,7 @@ import StaticMode from '@mapbox/mapbox-gl-draw-static-mode'
 import styles from '../utils/styles2'
 import { DEFAULT_DARK_FEATURE_COLOR } from '../utils/constant'
 import { FeatureCollection } from 'geojson'
+import { nanoid } from 'nanoid'
 
 function MapContainer() {
   const containerRef = useRef<HTMLDivElement>(null!)
@@ -35,6 +36,7 @@ function MapContainer() {
     map?.setLayoutProperty('map-data-fill', 'visibility', 'none')
     map?.setLayoutProperty('map-data-fill-outline', 'visibility', 'none')
     map?.setLayoutProperty('map-data-line', 'visibility', 'none')
+    mapRef.current?.setLayoutProperty('map-data-point', 'visibility', 'none')
 
     saveCancelRef.current?.open()
     trashRef.current?.open()
@@ -155,6 +157,11 @@ function MapContainer() {
         'visibility',
         'visible'
       )
+      mapRef.current?.setLayoutProperty(
+        'map-data-point',
+        'visibility',
+        'visible'
+      )
     })
 
     saveCancelRef.current.onSaveClick(() => {
@@ -165,11 +172,10 @@ function MapContainer() {
 
       const features = drawRef.current?.getAll()
 
-      // postData()
       if (features) {
         updateLayerData(features)
         setGeojson(features)
-        postData()
+        postData(features)
       }
 
       drawRef.current?.deleteAll()
@@ -189,6 +195,11 @@ function MapContainer() {
         'visibility',
         'visible'
       )
+      mapRef.current?.setLayoutProperty(
+        'map-data-point',
+        'visibility',
+        'visible'
+      )
     })
 
     trashRef.current.onClick(() => {
@@ -197,21 +208,13 @@ function MapContainer() {
 
     mapRef.current.on('click', (e) => {
       const features = mapRef.current?.queryRenderedFeatures(e.point, {
-        layers: ['map-data-line', 'map-data-fill']
+        layers: ['map-data-point', 'map-data-line', 'map-data-fill']
       })
 
-      const currentMode = drawRef.current?.getMode()
-      console.log('click xxxx', currentMode, features)
-
-      if (
-        // currentMode &&
-        // ['static', 'simple_select'].includes(currentMode) &&
-        features &&
-        features.length > 0
-      ) {
+      if (features && features.length > 0) {
         const popupNode = document.createElement('div')
 
-        new mapboxgl.Popup()
+        const popup = new mapboxgl.Popup()
           .setLngLat(e.lngLat)
           .setDOMContent(popupNode)
           .addTo(mapRef.current!)
@@ -220,24 +223,21 @@ function MapContainer() {
           <PropsPopup
             data={features[0]}
             onSave={(id, properties) => {
-              // console.log(99999, id, properties)
+              console.log('on save', id, properties)
+
               latestGeojson.current?.features.forEach((feature) => {
                 if (feature.properties && feature.properties['_id'] === id) {
                   feature.properties = properties
                 }
               })
 
-              console.log('post fc', latestGeojson.current)
               if (latestGeojson.current) {
                 setGeojson(latestGeojson.current)
               }
 
               updateLayerData(latestGeojson.current)
-
-              vscode.postMessage({
-                type: 'data',
-                data: JSON.stringify(latestGeojson.current)
-              })
+              postData(latestGeojson.current)
+              popup.remove()
             }}
           />
         )
@@ -255,6 +255,12 @@ function MapContainer() {
         return
       }
       const fc = geojson
+      e.features.forEach((feature) => {
+        feature.properties = {
+          ...feature.properties,
+          _id: nanoid()
+        }
+      })
       fc.features = [...fc.features, ...e.features]
 
       if (!fc) {
@@ -263,16 +269,13 @@ function MapContainer() {
 
       updateLayerData(fc)
       setGeojson(fc)
-
-      vscode.postMessage({
-        type: 'data',
-        data: JSON.stringify(fc)
-      })
+      postData(fc)
+      // vscode.postMessage({
+      //   type: 'data',
+      //   data: JSON.stringify(fc)
+      // })
       drawRef.current?.deleteAll()
-
       drawRef.current?.changeMode('static')
-
-      // console.log('change mode', drawRef.current?.getMode())
     },
     [geojson, setGeojson]
   )
@@ -330,6 +333,23 @@ function MapContainer() {
             },
             filter: ['==', ['geometry-type'], 'LineString']
           })
+
+          mapRef.current?.addLayer({
+            id: 'map-data-point',
+            type: 'circle',
+            source: 'map-data',
+            paint: {
+              'circle-color': ['coalesce', ['get', 'fill'], color],
+              'circle-opacity': ['coalesce', ['get', 'fill-opacity'], 1],
+              'circle-stroke-width': ['coalesce', ['get', 'stroke-width'], 1],
+              'circle-stroke-color': [
+                'coalesce',
+                ['get', 'stroke-color'],
+                '#ffffff'
+              ]
+            },
+            filter: ['==', ['geometry-type'], 'Point']
+          })
         }
       }
     })
@@ -355,14 +375,6 @@ function MapContainer() {
     }
   }, [geojson])
 
-  const postData = useCallback(() => {
-    const features = drawRef.current?.getAll()
-    vscode.postMessage({
-      type: 'data',
-      data: JSON.stringify(features)
-    })
-  }, [])
-
   const updateLayerData = (geojson: FeatureCollection | null) => {
     if (!geojson || !mapRef.current) {
       return
@@ -387,3 +399,25 @@ function MapContainer() {
 }
 
 export default MapContainer
+
+function postData(fc: FeatureCollection | null) {
+  if (!fc) {
+    return
+  }
+  const newFc = {
+    ...fc,
+    features: fc.features.map((f) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { _id, ...rest } = { ...f.properties }
+      return {
+        ...f,
+        properties: rest
+      }
+    })
+  }
+
+  vscode.postMessage({
+    type: 'data',
+    data: JSON.stringify(newFc)
+  })
+}

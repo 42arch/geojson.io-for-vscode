@@ -1,6 +1,7 @@
 {
-  "name": "geojson-toolkit",
-  "displayName": "GeoJSON Toolkit",
+  "name": "geojson-io",
+  "displayName": "GeoJSON IO",
+  "publisher": "Starllow Lab",
   "description": "",
   "version": "0.0.1",
   "engines": {
