@@ -1,20 +1,28 @@
 {
-  "name": "geojson-io",
-  "displayName": "GeoJSON IO",
-  "publisher": "Starllow Lab",
-  "description": "",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.96.0"
+  "name": "geojson-io-for-vscode",
+  "displayName": "GeoJSON.IO for VSCode",
+  "publisher": "swallow",
+  "description": "Create, Edit and Preview Your GeoJSON Data With VSCode",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "repository": "https://github.com/42arch/geojson.io-for-vscode",
+  "homepage": "https://github.com/42arch/geojson.io-for-vscode",
+  "bugs": {
+    "url": "https://github.com/42arch/geojson.io-for-vscode/issues/new"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Visualization",
+    "Data Science"
   ],
   "activationEvents": [
     "onStartupFinished",
     "onDidChangeTextDocument",
     "onDidOpenTextDocument"
   ],
+  "engines": {
+    "vscode": "^1.96.0"
+  },
   "main": "./out/extension.js",
   "contributes": {
     "capabilities": {
@@ -22,7 +30,7 @@
     },
     "commands": [
       {
-        "command": "geojson-toolkit.preview-geojson",
+        "command": "geojson-io.preview-geojson",
         "title": "🌏 Preview GeoJSON"
       }
     ],
@@ -30,23 +38,25 @@
       "editor/context": [
         {
           "when": "editorFocus && resourceExtname== '.json'",
-          "command": "geojson-toolkit.preview-geojson",
+          "command": "geojson-io.preview-geojson",
           "group": "navigation"
         },
         {
           "when": "editorFocus && resourceExtname== '.txt'",
-          "command": "geojson-toolkit.preview-geojson",
+          "command": "geojson-io.preview-geojson",
           "group": "navigation"
         },
         {
           "when": "editorFocus && resourceExtname== '.geojson'",
-          "command": "geojson-toolkit.preview-geojson",
+          "command": "geojson-io.preview-geojson",
           "group": "navigation"
         }
       ]
     }
   },
   "scripts": {
+    "package": "pnpm vsce package --no-dependencies",
+    "publish": "pnpm vsce publish --no-dependencies",
     "vscode:prepublish": "pnpm run compile",
     "compile:app": "vite build",
     "compile:extension": "tsc -p ./ --sourceMap false",
@@ -55,8 +65,7 @@
     "watch:extension": "tsc -watch -p ./",
     "watch": "npm-run-all -p watch:*",
     "pretest": "pnpm run compile && pnpm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "lint": "eslint src"
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.15",

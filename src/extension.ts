@@ -9,7 +9,7 @@ import ViewPanel from './view-panel'
 
 export function activate(context: ExtensionContext) {
   const openMapView = commands.registerCommand(
-    'geojson-toolkit.preview-geojson',
+    'geojson-io.preview-geojson',
     () => {
       try {
         const editor = window.activeTextEditor

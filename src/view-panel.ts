@@ -132,6 +132,30 @@ export default class ViewPanel {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Map App</title>
           <link rel="stylesheet" crossorigin href="${stylePath}">
+          <style>
+            ::-webkit-scrollbar {
+              width: 10px !important;
+              height: 10px !important;
+            }
+
+            ::-webkit-scrollbar-thumb {
+              background-color: #888 !important;
+              border-radius: 5px !important;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+              background-color: #555 !important;
+            }
+
+            ::-webkit-scrollbar-track {
+              background: #f1f1f1 !important;
+              border-radius: 5px !important;
+            }
+
+            ::-webkit-scrollbar-track:hover {
+              background: #ddd !important;
+            }
+          </style>
         </head>
 
         <body>
