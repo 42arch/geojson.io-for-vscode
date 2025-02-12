@@ -4,28 +4,49 @@
   z-index: 99;
 
   table {
+    font-size: 12px;
+    font-weight: 400;
     border-spacing: 0;
     border-collapse: collapse;
     width: 100%;
     overflow: auto;
     border-bottom: 1px solid #ccc;
 
-    tr {
-      td {
-        border: 1px solid #ccc;
-        padding: 0 3px;
+    tbody {
+      display: block;
+      max-height: 180px;
+      overflow-y: auto;
 
-        input {
-          width: 100px;
-          border: 0;
-          outline: 0;
-          background: transparent;
-          height: 24px;
-          line-height: 24px;
+      tr {
+        &:last-child {
+          td {
+            border-bottom: none;
+          }
+        }
 
-          &:focus-visible {
+        &:nth-child(even) {
+          td {
+            background-color: #f7f7f7;
+          }
+        }
+
+        td {
+          border: 1px solid #ccc;
+          padding: 0 3px;
+
+          input {
+            width: 100px;
             border: 0;
             outline: 0;
+            background: transparent;
+            height: 24px;
+            line-height: 24px;
+            font-size: 11px;
+
+            &:focus-visible {
+              border: 0;
+              outline: 0;
+            }
           }
         }
       }
@@ -78,6 +99,14 @@
         cursor: pointer;
         background: #eee;
 
+        &:first-child {
+          border-left: none;
+        }
+
+        &:last-child {
+          border-right: none;
+        }
+
         &.active {
           background: transparent;
           border-left: 1px solid transparent;
@@ -89,28 +118,45 @@
 
     .opts {
       display: flex;
-      justify-content: space-evenly;
+      justify-content: center;
       align-items: center;
       margin-top: 6px;
       margin-bottom: 6px;
       height: 32px;
 
-      button {
-        cursor: pointer;
-        border: 0;
-        border-radius: 1px;
-        background-color: #59aae7;
-        color: #ffffff;
-      }
+      .btns {
+        display: flex;
 
-      .save-btn {
-        padding: 5px;
-        border-radius: 3px;
-        color: white;
-        background: #34495e;
+        button {
+          cursor: pointer;
+          border: 0;
+          border-radius: 1px;
+          background-color: #59aae7;
+          color: #ffffff;
+          font-size: 12px;
+        }
 
-        &:hover {
-          background: #2980b9;
+        .save-btn {
+          padding: 6px;
+          border-radius: 3px;
+          color: white;
+          background: #34495e;
+          border-radius: 3px 0 0 3px;
+
+          &:hover {
+            background: #2980b9;
+          }
+        }
+
+        .cancel-btn {
+          padding: 6px;
+          background: #eee;
+          color: #222222;
+          border-radius: 0 3px 3px 0;
+
+          &:hover {
+            background: #f7f7f7;
+          }
         }
       }
     }

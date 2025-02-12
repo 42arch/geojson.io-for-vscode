@@ -1,17 +1,24 @@
 import { useCallback, useEffect, useRef } from 'react'
-import mapboxgl from 'mapbox-gl'
+import mapboxgl, { NavigationControl } from 'mapbox-gl'
 import MapboxDraw, { DrawCreateEvent } from '@mapbox/mapbox-gl-draw'
 import { createRoot } from 'react-dom/client'
 import { bbox } from '@turf/turf'
-import { EditControl, SaveCancelControl, TrashControl } from '../utils/controls'
-import PropsPopup from './props-popup'
-import { useStore } from './store'
-import ExtendDraw from '../utils/extend-draw'
-import StaticMode from '@mapbox/mapbox-gl-draw-static-mode'
-import styles from '../utils/styles2'
-import { DEFAULT_DARK_FEATURE_COLOR } from '../utils/constant'
 import { FeatureCollection } from 'geojson'
 import { nanoid } from 'nanoid'
+import PropsPopup from './props-popup'
+import { useStore } from './store'
+import { EditControl, SaveCancelControl, TrashControl } from '../utils/controls'
+import ExtendDraw from '../utils/extend-draw'
+import DrawRectangle from '../utils/rectangle'
+import DrawCircle from '../utils/circle'
+import StaticMode from '@mapbox/mapbox-gl-draw-static-mode'
+import styles from '../utils/styles'
+import {
+  ACCESS_TOKEN,
+  DEFAULT_DARK_FEATURE_COLOR,
+  LAYER_STYLES,
+  PROJECTIONS
+} from '../utils/constant'
 
 function MapContainer() {
   const containerRef = useRef<HTMLDivElement>(null!)
@@ -20,13 +27,11 @@ function MapContainer() {
   const editRef = useRef<EditControl | null>(null)
   const saveCancelRef = useRef<SaveCancelControl | null>(null)
   const trashRef = useRef<TrashControl | null>(null)
-  const { geojson, setGeojson } = useStore()
+  const { geojson, setGeojson, projection, layerStyle } = useStore()
   const latestGeojson = useRef<FeatureCollection | null>(null)
 
   useEffect(() => {
     latestGeojson.current = geojson
-
-    console.log('geojson', geojson)
   }, [geojson])
 
   const handleEdit = () => {
@@ -48,8 +53,7 @@ function MapContainer() {
   }
 
   useEffect(() => {
-    mapboxgl.accessToken =
-      'pk.eyJ1IjoiaW5nZW40MiIsImEiOiJjazlsMnliMXoyMWoxM2tudm1hajRmaHZ6In0.rWx_wAz2cAeMIzxQQfPDPA'
+    mapboxgl.accessToken = ACCESS_TOKEN
     if (mapRef.current) {
       return
     }
@@ -57,7 +61,8 @@ function MapContainer() {
       container: containerRef.current,
       center: [0, 0],
       zoom: 4,
-      projection: 'mercator'
+      style: LAYER_STYLES[0].style,
+      projection: PROJECTIONS[0].value
     })
 
     drawRef.current = new MapboxDraw({
@@ -66,6 +71,8 @@ function MapContainer() {
         ...MapboxDraw.modes,
         // simple_select: SimpleSelect,
         // direct_select: MapboxDraw.modes.direct_select,
+        draw_rectangle: DrawRectangle,
+        draw_circle: DrawCircle,
         static: StaticMode
       },
       controls: {},
@@ -73,6 +80,9 @@ function MapContainer() {
       userProperties: true,
       styles: styles
     })
+
+    mapRef.current.addControl(new NavigationControl(), 'top-right')
+
     const draw = drawRef.current
     const drawControl = new ExtendDraw({
       draw: draw,
@@ -122,7 +132,6 @@ function MapContainer() {
     })
 
     mapRef.current.addControl(drawControl)
-    // drawRef.current = draw
 
     editRef.current = new EditControl()
     mapRef.current.addControl(editRef.current, 'top-right')
@@ -223,22 +232,19 @@ function MapContainer() {
           <PropsPopup
             data={features[0]}
             onSave={(id, properties) => {
-              console.log('on save', id, properties)
-
               latestGeojson.current?.features.forEach((feature) => {
                 if (feature.properties && feature.properties['_id'] === id) {
                   feature.properties = properties
                 }
               })
-
               if (latestGeojson.current) {
                 setGeojson(latestGeojson.current)
               }
-
               updateLayerData(latestGeojson.current)
               postData(latestGeojson.current)
               popup.remove()
             }}
+            onCancel={() => popup.remove()}
           />
         )
       }
@@ -286,8 +292,6 @@ function MapContainer() {
     mapRef.current?.on('idle', () => {
       if (!mapRef.current?.getSource('map-data')) {
         if (geojson) {
-          // mapRef.current?.on('draw.create', created)
-
           const [minLng, minLat, maxLng, maxLat] = bbox(geojson)
           mapRef.current?.fitBounds([minLng, minLat, maxLng, maxLat], {
             padding: 10
@@ -342,11 +346,7 @@ function MapContainer() {
               'circle-color': ['coalesce', ['get', 'fill'], color],
               'circle-opacity': ['coalesce', ['get', 'fill-opacity'], 1],
               'circle-stroke-width': ['coalesce', ['get', 'stroke-width'], 1],
-              'circle-stroke-color': [
-                'coalesce',
-                ['get', 'stroke-color'],
-                '#ffffff'
-              ]
+              'circle-stroke-color': ['coalesce', ['get', 'stroke'], '#ffffff']
             },
             filter: ['==', ['geometry-type'], 'Point']
           })
@@ -354,26 +354,24 @@ function MapContainer() {
       }
     })
 
-    console.log('update geojson', geojson)
-
     if (mapRef.current?.isStyleLoaded()) {
       updateLayerData(geojson)
     }
-
-    // const handleEdit = () => {
-    //   if (geojson) {
-    //     console.log('edit on click inner', geojson)
-    //     drawRef.current?.add(geojson)
-    //   }
-    // }
 
     mapRef.current?.on('draw.create', created)
 
     return () => {
       mapRef.current?.off('draw.create', created)
-      // editRef.current?.offClick()
     }
   }, [geojson])
+
+  useEffect(() => {
+    mapRef.current?.setProjection(projection)
+  }, [projection])
+
+  useEffect(() => {
+    mapRef.current?.setStyle(layerStyle.style)
+  }, [layerStyle])
 
   const updateLayerData = (geojson: FeatureCollection | null) => {
     if (!geojson || !mapRef.current) {

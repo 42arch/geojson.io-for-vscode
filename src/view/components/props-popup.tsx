@@ -24,6 +24,7 @@ interface Props {
     id: string | number | undefined,
     properties: GeoJSONFeature['properties']
   ) => void
+  onCancel: () => void
 }
 
 // Value Input
@@ -216,7 +217,7 @@ function InfoTable({ data }: { data: GeoJSONFeature }) {
   )
 }
 
-function PropsPopup({ data, onSave }: Props) {
+function PropsPopup({ data, onSave, onCancel }: Props) {
   const [activeTab, setActiveTab] = useState<'properties' | 'info'>(
     'properties'
   )
@@ -286,9 +287,14 @@ function PropsPopup({ data, onSave }: Props) {
           </div>
         </div>
         <div className="opts">
-          <button className="save-btn" onClick={handleSave}>
-            Save
-          </button>
+          <div className="btns">
+            <button className="save-btn" onClick={handleSave}>
+              Save
+            </button>
+            <button className="cancel-btn" onClick={onCancel}>
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>

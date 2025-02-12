@@ -8,6 +8,8 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import './index.less'
 import { nanoid } from 'nanoid'
+import ProjectionSwitch from './components/projection-switch'
+import LayerSwitch from './components/layer-switch'
 
 function App() {
   const { setGeojson } = useStore()
@@ -43,6 +45,8 @@ function App() {
   return (
     <div className="app">
       <MapContainer />
+      <ProjectionSwitch />
+      <LayerSwitch />
     </div>
   )
 }

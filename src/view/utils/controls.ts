@@ -12,8 +12,7 @@ export class EditControl implements IControl {
       'mapboxgl-ctrl-group mapboxgl-ctrl edit-control hidden'
 
     this._container.innerHTML = `
-            <button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_edit" title="Edit geometries" style="background-image: url(${edit}); background-size: 13px 13px;">
-              <img src=${edit} width=13 height=13 />
+            <button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_edit" title="Edit geometries" >
             </button>
           `
 
