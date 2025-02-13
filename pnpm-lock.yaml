@@ -20,6 +20,9 @@ dependencies:
   '@types/react-dom':
     specifier: '18'
     version: 18.3.5(@types/react@18.3.18)
+  geojson-validation:
+    specifier: ^1.0.2
+    version: 1.0.2
   mapbox-gl:
     specifier: ^3.9.3
     version: 3.9.4
@@ -40,6 +43,9 @@ devDependencies:
   '@types/geojson':
     specifier: ^7946.0.15
     version: 7946.0.16
+  '@types/geojson-validation':
+    specifier: ^1.0.3
+    version: 1.0.3
   '@types/mapbox-gl':
     specifier: ^3.4.1
     version: 3.4.1
@@ -2445,6 +2451,10 @@ packages:
     resolution: {integrity: sha512-C3YYeRQWp2fmq9OryX+FoDy8nXS6scQ7dPptD8LnFDAUNcKWJjXQKDNJD3HVm+kOUsXhTOkpi69vI4EuAr95bA==}
     dev: true
 
+  /@types/geojson-validation@1.0.3:
+    resolution: {integrity: sha512-S+Ka75g23eK33jblC6u3Tc7GKrBfo0VuHhydPw9WdWRib7sGPAubUbNiUkdTrX9dl5F18/iD8ERzH31AYLFiKg==}
+    dev: true
+
   /@types/geojson-vt@3.2.5:
     resolution: {integrity: sha512-qDO7wqtprzlpe8FfQ//ClPV9xiuoh2nkIgiouIptON9w5jvD/fA4szvP9GBlDVdJ5dldAl0kX/sy3URbWwLx0g==}
     dependencies:
@@ -3845,6 +3855,11 @@ packages:
     resolution: {integrity: sha512-/QM1b5u2d172qQVO//9CGRa49jEmclKEsYOQmWP9ooEjj63tBM51m2805xsbxkzlEELQ2REgTf700gUhhlegxA==}
     dependencies:
       rbush: 2.0.2
+    dev: false
+
+  /geojson-validation@1.0.2:
+    resolution: {integrity: sha512-K5jrJ4wFvORn2pRKeg181LL0QPYuEKn2KHPvfH1m2QtFlAXFLKdseqt0XwBM3ELOY7kNM1fglRQ6ZwUQZ5S00A==}
+    hasBin: true
     dev: false
 
   /geojson-vt@4.0.2:

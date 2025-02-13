@@ -5,7 +5,17 @@ import {
   window,
   workspace
 } from 'vscode'
+import gjv from 'geojson-validation'
 import ViewPanel from './view-panel'
+
+function isValidGeojsonText(text: string) {
+  try {
+    const parsed = JSON.parse(text)
+    return gjv.valid(parsed)
+  } catch {
+    return false
+  }
+}
 
 export function activate(context: ExtensionContext) {
   const openMapView = commands.registerCommand(
@@ -15,11 +25,18 @@ export function activate(context: ExtensionContext) {
         const editor = window.activeTextEditor
         if (editor) {
           const text = editor.document.getText()
-          ViewPanel.open(context)
-          ViewPanel.postMessageToWebview(text)
+
+          if (isValidGeojsonText(text)) {
+            ViewPanel.open(context)
+            ViewPanel.postMessageToWebview(text)
+          } else {
+            window.showWarningMessage(
+              "🌏 The data you're trying to preview is not a valid GeoJSON."
+            )
+          }
         } else {
           window.showWarningMessage(
-            '🌏 You should open your geojson file on the editor!'
+            '🌏 You should open your geojson file in the editor!'
           )
         }
       } catch (error) {

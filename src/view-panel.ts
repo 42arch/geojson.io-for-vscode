@@ -102,8 +102,6 @@ export default class ViewPanel {
     if (instance) {
       instance.panel.webview.postMessage(message)
     }
-    // const instance = ViewPanel.getInstance(context)
-    // ctx.currentPanel?.webview.postMessage(message)
   }
 
   private render() {
