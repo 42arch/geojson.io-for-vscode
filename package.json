@@ -4,7 +4,7 @@
   "publisher": "swallow",
   "description": "Create, Edit and Preview Your GeoJSON Data With VSCode",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "icon": "icon.png",
   "repository": "https://github.com/42arch/geojson.io-for-vscode",
   "homepage": "https://github.com/42arch/geojson.io-for-vscode",
@@ -68,7 +68,7 @@
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
     "changeset": "changeset",
-    "version": "changeset version",
+    "version-pkg": "changeset version",
     "tag": "changeset tag"
   },
   "devDependencies": {

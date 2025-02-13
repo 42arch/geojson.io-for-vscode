@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.2
+
+### Patch Changes
+
+- Validate GeoJSON Schema before preview it.
+
 ## 1.0.1
 
 ### Patch Changes
