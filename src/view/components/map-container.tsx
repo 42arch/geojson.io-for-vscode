@@ -5,17 +5,24 @@ import { createRoot } from 'react-dom/client'
 import { bbox } from '@turf/turf'
 import { FeatureCollection } from 'geojson'
 import { nanoid } from 'nanoid'
+import StaticMode from '@mapbox/mapbox-gl-draw-static-mode'
 import PropsPopup from './props-popup'
 import { useStore } from './store'
-import { EditControl, SaveCancelControl, TrashControl } from '../utils/controls'
-import ExtendDraw from '../utils/extend-draw'
-import DrawRectangle from '../utils/rectangle'
-import DrawCircle from '../utils/circle'
-import StaticMode from '@mapbox/mapbox-gl-draw-static-mode'
+import {
+  EditControl,
+  SaveCancelControl,
+  TrashControl
+} from '../utils/draw/controls'
+import ExtendDraw from '../utils/draw/extend-draw'
+import DrawRectangle from '../utils/draw/rectangle'
+import DrawCircle from '../utils/draw/circle'
 import styles from '../utils/styles'
 import {
   ACCESS_TOKEN,
   DEFAULT_DARK_FEATURE_COLOR,
+  DEFAULT_FILL_OPACITY,
+  DEFAULT_STROKE_OPACITY,
+  DEFAULT_STROKE_WIDTH,
   LAYER_STYLES,
   PROJECTIONS
 } from '../utils/constant'
@@ -24,6 +31,7 @@ function MapContainer() {
   const containerRef = useRef<HTMLDivElement>(null!)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const drawRef = useRef<MapboxDraw | null>(null)
+  const drawControlRef = useRef<ExtendDraw | null>(null)
   const editRef = useRef<EditControl | null>(null)
   const saveCancelRef = useRef<SaveCancelControl | null>(null)
   const trashRef = useRef<TrashControl | null>(null)
@@ -34,22 +42,139 @@ function MapContainer() {
     latestGeojson.current = geojson
   }, [geojson])
 
-  const handleEdit = () => {
-    const map = mapRef.current
+  const handleEditStart = () => {
     drawRef.current?.changeMode('simple_select')
-
-    map?.setLayoutProperty('map-data-fill', 'visibility', 'none')
-    map?.setLayoutProperty('map-data-fill-outline', 'visibility', 'none')
-    map?.setLayoutProperty('map-data-line', 'visibility', 'none')
-    mapRef.current?.setLayoutProperty('map-data-point', 'visibility', 'none')
+    toggleMapData('none')
 
     saveCancelRef.current?.open()
     trashRef.current?.open()
     editRef.current?.close()
+    drawControlRef.current?.close()
 
     if (latestGeojson.current) {
       drawRef.current?.add(latestGeojson.current)
     }
+  }
+
+  const handleEditCancel = () => {
+    drawRef.current?.changeMode('static')
+    saveCancelRef.current?.close()
+    trashRef.current?.close()
+    editRef.current?.open()
+    drawControlRef.current?.open()
+    drawRef.current?.deleteAll()
+    toggleMapData('visible')
+  }
+
+  const handleEditSave = () => {
+    drawRef.current?.changeMode('static')
+    saveCancelRef.current?.close()
+    trashRef.current?.close()
+    editRef.current?.open()
+    drawControlRef.current?.open()
+    const features = drawRef.current?.getAll()
+    if (features) {
+      updateLayerData(features)
+      setGeojson(features)
+      postData(features)
+    }
+
+    drawRef.current?.deleteAll()
+    toggleMapData('visible')
+  }
+
+  const addMapData = (geojson: FeatureCollection) => {
+    const color = DEFAULT_DARK_FEATURE_COLOR
+
+    mapRef.current?.addSource('map-data', {
+      type: 'geojson',
+      data: geojson,
+      promoteId: '_id'
+    })
+
+    mapRef.current?.addLayer({
+      id: 'map-data-fill',
+      type: 'fill',
+      source: 'map-data',
+      paint: {
+        'fill-color': ['coalesce', ['get', 'fill'], color],
+        'fill-opacity': [
+          'coalesce',
+          ['get', 'fill-opacity'],
+          DEFAULT_FILL_OPACITY
+        ]
+      },
+      filter: ['==', ['geometry-type'], 'Polygon']
+    })
+
+    mapRef.current?.addLayer({
+      id: 'map-data-fill-outline',
+      type: 'line',
+      source: 'map-data',
+      paint: {
+        'line-color': ['coalesce', ['get', 'stroke'], color],
+        'line-width': [
+          'coalesce',
+          ['get', 'stroke-width'],
+          DEFAULT_STROKE_WIDTH
+        ],
+        'line-opacity': [
+          'coalesce',
+          ['get', 'stroke-opacity'],
+          DEFAULT_STROKE_OPACITY
+        ]
+      },
+      filter: ['==', ['geometry-type'], 'Polygon']
+    })
+
+    mapRef.current?.addLayer({
+      id: 'map-data-line',
+      type: 'line',
+      source: 'map-data',
+      paint: {
+        'line-color': ['coalesce', ['get', 'stroke'], color],
+        'line-width': [
+          'coalesce',
+          ['get', 'stroke-width'],
+          DEFAULT_STROKE_WIDTH
+        ],
+        'line-opacity': [
+          'coalesce',
+          ['get', 'stroke-opacity'],
+          DEFAULT_STROKE_OPACITY
+        ]
+      },
+      filter: ['==', ['geometry-type'], 'LineString']
+    })
+
+    mapRef.current?.addLayer({
+      id: 'map-data-point',
+      type: 'circle',
+      source: 'map-data',
+      paint: {
+        'circle-color': ['coalesce', ['get', 'fill'], color],
+        'circle-opacity': [
+          'coalesce',
+          ['get', 'fill-opacity'],
+          DEFAULT_FILL_OPACITY
+        ],
+        'circle-stroke-width': [
+          'coalesce',
+          ['get', 'stroke-width'],
+          DEFAULT_STROKE_WIDTH
+        ],
+        'circle-stroke-color': ['coalesce', ['get', 'stroke'], '#ffffff']
+      },
+      filter: ['==', ['geometry-type'], 'Point']
+    })
+  }
+
+  const toggleMapData = (visibility: 'visible' | 'none') => {
+    const map = mapRef.current
+    map?.setLayoutProperty('map-data-fill', 'visibility', visibility)
+    map?.setLayoutProperty('map-data-fill-outline', 'visibility', visibility)
+    map?.setLayoutProperty('map-data-line', 'visibility', visibility)
+    map?.setLayoutProperty('map-data-point', 'visibility', visibility)
   }
 
   useEffect(() => {
@@ -94,7 +219,7 @@ function MapContainer() {
             draw.changeMode('draw_point')
           },
           classes: ['mapbox-gl-draw_ctrl-draw-btn', 'mapbox-gl-draw_point'],
-          title: 'Draw Point (m)'
+          title: 'Draw Point'
         },
         {
           on: 'click',
@@ -102,7 +227,7 @@ function MapContainer() {
             draw.changeMode('draw_line_string')
           },
           classes: ['mapbox-gl-draw_ctrl-draw-btn', 'mapbox-gl-draw_line'],
-          title: 'Draw LineString (l)'
+          title: 'Draw LineString'
         },
         {
           on: 'click',
@@ -110,7 +235,7 @@ function MapContainer() {
             draw.changeMode('draw_polygon')
           },
           classes: ['mapbox-gl-draw_ctrl-draw-btn', 'mapbox-gl-draw_polygon'],
-          title: 'Draw Polygon (p)'
+          title: 'Draw Polygon'
         },
         {
           on: 'click',
@@ -118,7 +243,7 @@ function MapContainer() {
             draw.changeMode('draw_rectangle')
           },
           classes: ['mapbox-gl-draw_ctrl-draw-btn', 'mapbox-gl-draw_rectangle'],
-          title: 'Draw Rectangular Polygon (r)'
+          title: 'Draw Rectangular Polygon'
         },
         {
           on: 'click',
@@ -126,11 +251,11 @@ function MapContainer() {
             draw.changeMode('draw_circle')
           },
           classes: ['mapbox-gl-draw_ctrl-draw-btn', 'mapbox-gl-draw_circle'],
-          title: 'Draw Circular Polygon (c)'
+          title: 'Draw Circular Polygon'
         }
       ]
     })
-
+    drawControlRef.current = drawControl
     mapRef.current.addControl(drawControl)
 
     editRef.current = new EditControl()
@@ -142,74 +267,11 @@ function MapContainer() {
     trashRef.current = new TrashControl()
     mapRef.current.addControl(trashRef.current, 'top-right')
 
-    editRef.current?.onClick(handleEdit)
+    editRef.current?.onClick(handleEditStart)
 
-    saveCancelRef.current.onCancelClick(() => {
-      drawRef.current?.changeMode('static')
-      saveCancelRef.current?.close()
-      trashRef.current?.close()
-      editRef.current?.open()
-      drawRef.current?.deleteAll()
+    saveCancelRef.current.onCancelClick(handleEditCancel)
 
-      mapRef.current?.setLayoutProperty(
-        'map-data-fill',
-        'visibility',
-        'visible'
-      )
-      mapRef.current?.setLayoutProperty(
-        'map-data-fill-outline',
-        'visibility',
-        'visible'
-      )
-      mapRef.current?.setLayoutProperty(
-        'map-data-line',
-        'visibility',
-        'visible'
-      )
-      mapRef.current?.setLayoutProperty(
-        'map-data-point',
-        'visibility',
-        'visible'
-      )
-    })
-
-    saveCancelRef.current.onSaveClick(() => {
-      drawRef.current?.changeMode('static')
-      saveCancelRef.current?.close()
-      trashRef.current?.close()
-      editRef.current?.open()
-
-      const features = drawRef.current?.getAll()
-
-      if (features) {
-        updateLayerData(features)
-        setGeojson(features)
-        postData(features)
-      }
-
-      drawRef.current?.deleteAll()
-
-      mapRef.current?.setLayoutProperty(
-        'map-data-fill',
-        'visibility',
-        'visible'
-      )
-      mapRef.current?.setLayoutProperty(
-        'map-data-fill-outline',
-        'visibility',
-        'visible'
-      )
-      mapRef.current?.setLayoutProperty(
-        'map-data-line',
-        'visibility',
-        'visible'
-      )
-      mapRef.current?.setLayoutProperty(
-        'map-data-point',
-        'visibility',
-        'visible'
-      )
-    })
+    saveCancelRef.current.onSaveClick(handleEditSave)
 
     trashRef.current.onClick(() => {
       drawRef.current?.trash()
@@ -287,8 +349,6 @@ function MapContainer() {
   )
 
   useEffect(() => {
-    const color = DEFAULT_DARK_FEATURE_COLOR
-
     mapRef.current?.on('idle', () => {
       if (!mapRef.current?.getSource('map-data')) {
         if (geojson) {
@@ -296,60 +356,7 @@ function MapContainer() {
           mapRef.current?.fitBounds([minLng, minLat, maxLng, maxLat], {
             padding: 10
           })
-
-          mapRef.current?.addSource('map-data', {
-            type: 'geojson',
-            data: geojson,
-            promoteId: '_id'
-          })
-
-          mapRef.current?.addLayer({
-            id: 'map-data-fill',
-            type: 'fill',
-            source: 'map-data',
-            paint: {
-              'fill-color': ['coalesce', ['get', 'fill'], color],
-              'fill-opacity': ['coalesce', ['get', 'fill-opacity'], 0.3]
-            },
-            filter: ['==', ['geometry-type'], 'Polygon']
-          })
-
-          mapRef.current?.addLayer({
-            id: 'map-data-fill-outline',
-            type: 'line',
-            source: 'map-data',
-            paint: {
-              'line-color': ['coalesce', ['get', 'stroke'], color],
-              'line-width': ['coalesce', ['get', 'stroke-width'], 2],
-              'line-opacity': ['coalesce', ['get', 'stroke-opacity'], 1]
-            },
-            filter: ['==', ['geometry-type'], 'Polygon']
-          })
-
-          mapRef.current?.addLayer({
-            id: 'map-data-line',
-            type: 'line',
-            source: 'map-data',
-            paint: {
-              'line-color': ['coalesce', ['get', 'stroke'], color],
-              'line-width': ['coalesce', ['get', 'stroke-width'], 2],
-              'line-opacity': ['coalesce', ['get', 'stroke-opacity'], 1]
-            },
-            filter: ['==', ['geometry-type'], 'LineString']
-          })
-
-          mapRef.current?.addLayer({
-            id: 'map-data-point',
-            type: 'circle',
-            source: 'map-data',
-            paint: {
-              'circle-color': ['coalesce', ['get', 'fill'], color],
-              'circle-opacity': ['coalesce', ['get', 'fill-opacity'], 1],
-              'circle-stroke-width': ['coalesce', ['get', 'stroke-width'], 1],
-              'circle-stroke-color': ['coalesce', ['get', 'stroke'], '#ffffff']
-            },
-            filter: ['==', ['geometry-type'], 'Point']
-          })
+          addMapData(geojson)
         }
       }
     })

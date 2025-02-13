@@ -3,7 +3,7 @@ import { IControl, Map } from 'mapbox-gl'
 
 type Button = {
   on: string
-  action: () => void
+  action: (e: any) => void
   classes: string[]
   title: string
   elButton?: HTMLButtonElement
@@ -62,5 +62,13 @@ export default class ExtendDraw implements IControl {
   removeButton(opt: Button) {
     opt.elButton?.removeEventListener(opt.on, opt.action)
     opt.elButton?.remove()
+  }
+
+  open() {
+    this.container?.style.setProperty('display', 'block')
+  }
+
+  close() {
+    this.container?.style.setProperty('display', 'none')
   }
 }
