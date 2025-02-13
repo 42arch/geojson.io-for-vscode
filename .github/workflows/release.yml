@@ -25,17 +25,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - id: release
-        uses: rymndhng/release-on-push-action@master
+      - name: Create Release Pull Request
+        id: changesets
+        uses: changesets/action@v1
         with:
-          bump_version_scheme: minor
-          tag_prefix: v
+          title: 🚀 Release new version
+          publish: npx @changesets/cli tag # this will create a new tag and a new release
 
-      - name: Check Output Parameters
-        run: |
-          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
-          echo "Got release version ${{ steps.release.outputs.version }}"
-          echo "Upload release artifacts to ${{ steps.release.outputs.upload_url }}"
 
       # - name: Push Tag
       #   # uses: changesets/action@v1
