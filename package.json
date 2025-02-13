@@ -3,7 +3,8 @@
   "displayName": "GeoJSON.IO for VSCode",
   "publisher": "swallow",
   "description": "Create, Edit and Preview Your GeoJSON Data With VSCode",
-  "version": "1.0.0",
+  "private": true,
+  "version": "1.0.1",
   "icon": "icon.png",
   "repository": "https://github.com/42arch/geojson.io-for-vscode",
   "homepage": "https://github.com/42arch/geojson.io-for-vscode",
@@ -65,9 +66,13 @@
     "watch:extension": "tsc -watch -p ./",
     "watch": "npm-run-all -p watch:*",
     "pretest": "pnpm run compile && pnpm run lint",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "tag": "changeset tag"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.12",
     "@types/geojson": "^7946.0.15",
     "@types/mapbox-gl": "^3.4.1",
     "@types/mapbox__mapbox-gl-draw": "^1.4.8",
