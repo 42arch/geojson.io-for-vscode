@@ -2,26 +2,38 @@ name: release
 
 on:
   push:
-    branches: [refactor/v1.0]
+    branches: [main]
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v1
         with:
           node-version: 18
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 9
-      - run: pnpm install
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Create Release
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: npx @changesets/cli tag
+
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v1
         with:
-          # Personal access token
           pat: ${{secrets.PERSONAL_ACCESS_TOKEN}}
           registryUrl: https://marketplace.visualstudio.com
           dependencies: false

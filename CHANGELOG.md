@@ -1,9 +1,13 @@
 # Change Log
 
-All notable changes to the "geojson-io" extension will be documented in this file.
+## 1.0.1
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### Patch Changes
 
-## [Unreleased]
+- Fix bugs
 
-- Initial release
+## 1.0.0
+
+### Breaking Changes
+
+- Use mapbox-gl to refactor this extension.
