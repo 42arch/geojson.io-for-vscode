@@ -3,12 +3,11 @@ import { LayerStyle, Row } from './types'
 
 export const ACCESS_TOKEN =
   'pk.eyJ1IjoiaW5nZW40MiIsImEiOiJjazlsMnliMXoyMWoxM2tudm1hajRmaHZ6In0.rWx_wAz2cAeMIzxQQfPDPA'
-export const DEFAULT_FILL_COLOR = '#000000'
-export const DEFAULT_STROKE_COLOR = '#000000'
+export const DEFAULT_FILL_COLOR = '#555555'
+export const DEFAULT_STROKE_COLOR = '#555555'
 export const DEFAULT_STROKE_WIDTH = 2
 export const DEFAULT_STROKE_OPACITY = 0.8
 export const DEFAULT_FILL_OPACITY = 0.5
-export const DEFAULT_DARK_FEATURE_COLOR = '#555'
 
 export const DEFAULT_FILL_STYLE_ROWS: Row[] = [
   {

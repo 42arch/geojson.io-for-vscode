@@ -14,9 +14,9 @@ import {
   DEFAULT_POINT_STYLE_ROWS,
   STYLE_FIELDS
 } from '../utils/constant'
+import measure from '../utils/measure'
 import { Row } from '../utils/types'
 import './props-popup.less'
-import measure from '../utils/measure'
 
 interface Props {
   data: GeoJSONFeature
@@ -195,7 +195,6 @@ function PropertiesTable({
 // Measure Info Table
 function InfoTable({ data }: { data: GeoJSONFeature }) {
   const info = measure(data)
-  console.log('data info', data, info)
 
   return (
     <div className="properties-table">
@@ -207,7 +206,7 @@ function InfoTable({ data }: { data: GeoJSONFeature }) {
                 <input type="text" defaultValue={field} disabled />
               </td>
               <td>
-                <input type="text" defaultValue={info[field]} disabled />
+                <input type="number" defaultValue={info[field]} disabled />
               </td>
             </tr>
           ))}
@@ -265,7 +264,6 @@ function PropsPopup({ data, onSave, onCancel }: Props) {
             type={data.geometry.type}
             rowList={rowList}
             onChange={(rowList) => {
-              console.log('row list change ', rowList)
               setRowList(rowList)
             }}
           />
@@ -305,7 +303,7 @@ export default PropsPopup
 
 function addStyleRows(type: GeoJsonGeometryTypes, rowList: Row[]) {
   const mergeRowList = (rowList: Row[], styleRowList: Row[]) => {
-    const merged = [...rowList]
+    const merged = [...rowList.filter((r) => r.field)]
     styleRowList.forEach((row) => {
       const exist = merged.find((r) => r.field === row.field)
       if (!exist) {

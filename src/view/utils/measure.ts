@@ -10,11 +10,12 @@ export default function measure(feature: Feature) {
   switch (feature.geometry.type) {
     case 'Polygon':
     case 'MultiPolygon': {
-      const areaSqMeters = round(getArea(feature), 4)
+      const areaSqMeters = getArea(feature)
       return {
-        'Sq. Meters': areaSqMeters,
+        'Sq. Meters': round(areaSqMeters, 2),
         'Sq. Kilometers': round(areaSqMeters / 1000 / 1000, 2),
         Acres: round(areaSqMeters / 666.666666667, 2),
+        'Sq. Feet': round(areaSqMeters * 10.7639, 2),
         'Sq. Miles': round(areaSqMeters / 2589988.11034, 2)
       }
     }
@@ -23,8 +24,9 @@ export default function measure(feature: Feature) {
       const lengthKiloMeters = getLength(feature)
       return {
         Meters: round(lengthKiloMeters * 1000, 2),
-        Kilometers: round(lengthKiloMeters, 4),
-        Yards: round(lengthKiloMeters * 1093.6132983, 2),
+        Kilometers: round(lengthKiloMeters, 2),
+        Feet: round(lengthKiloMeters * 3280.84),
+        Yards: round(lengthKiloMeters * 1093.61, 2),
         Miles: round(lengthKiloMeters * 0.6213712, 2)
       }
     }
@@ -32,8 +34,8 @@ export default function measure(feature: Feature) {
     case 'MultiPoint': {
       const center = getCenter(feature.geometry)
       return {
-        Longitude: center.geometry.coordinates[0],
-        Latitude: center.geometry.coordinates[1]
+        Longitude: round(center.geometry.coordinates[0], 4),
+        Latitude: round(center.geometry.coordinates[1], 4)
       }
     }
     default:

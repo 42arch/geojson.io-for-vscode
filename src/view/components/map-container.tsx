@@ -19,7 +19,7 @@ import DrawCircle from '../utils/draw/circle'
 import styles from '../utils/styles'
 import {
   ACCESS_TOKEN,
-  DEFAULT_DARK_FEATURE_COLOR,
+  DEFAULT_FILL_COLOR,
   DEFAULT_FILL_OPACITY,
   DEFAULT_STROKE_OPACITY,
   DEFAULT_STROKE_WIDTH,
@@ -84,7 +84,7 @@ function MapContainer() {
   }
 
   const addMapData = (geojson: FeatureCollection) => {
-    const color = DEFAULT_DARK_FEATURE_COLOR
+    const color = DEFAULT_FILL_COLOR
 
     mapRef.current?.addSource('map-data', {
       type: 'geojson',
@@ -177,6 +177,33 @@ function MapContainer() {
     map?.setLayoutProperty('map-data-point', 'visibility', visibility)
   }
 
+  const created = useCallback(
+    (e: DrawCreateEvent) => {
+      if (!geojson || !mapRef.current) {
+        return
+      }
+      const fc = geojson
+      e.features.forEach((feature) => {
+        feature.properties = {
+          ...feature.properties,
+          _id: nanoid()
+        }
+      })
+      fc.features = [...fc.features, ...e.features]
+
+      if (!fc) {
+        return
+      }
+
+      updateLayerData(fc)
+      setGeojson(fc)
+      postData(fc)
+      drawRef.current?.deleteAll()
+      drawRef.current?.changeMode('static')
+    },
+    [geojson, setGeojson]
+  )
+
   useEffect(() => {
     mapboxgl.accessToken = ACCESS_TOKEN
     if (mapRef.current) {
@@ -185,7 +212,7 @@ function MapContainer() {
     mapRef.current = new mapboxgl.Map({
       container: containerRef.current,
       center: [0, 0],
-      zoom: 4,
+      zoom: 1,
       style: LAYER_STYLES[0].style,
       projection: PROJECTIONS[0].value
     })
@@ -316,37 +343,6 @@ function MapContainer() {
       mapRef.current?.remove()
     }
   }, [])
-
-  const created = useCallback(
-    (e: DrawCreateEvent) => {
-      if (!geojson || !mapRef.current) {
-        return
-      }
-      const fc = geojson
-      e.features.forEach((feature) => {
-        feature.properties = {
-          ...feature.properties,
-          _id: nanoid()
-        }
-      })
-      fc.features = [...fc.features, ...e.features]
-
-      if (!fc) {
-        return
-      }
-
-      updateLayerData(fc)
-      setGeojson(fc)
-      postData(fc)
-      // vscode.postMessage({
-      //   type: 'data',
-      //   data: JSON.stringify(fc)
-      // })
-      drawRef.current?.deleteAll()
-      drawRef.current?.changeMode('static')
-    },
-    [geojson, setGeojson]
-  )
 
   useEffect(() => {
     mapRef.current?.on('idle', () => {
