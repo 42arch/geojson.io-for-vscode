@@ -3,6 +3,14 @@
 src/**
 .gitignore
 .yarnrc
+.eslintrc
+.prettierrc
+.changeset
+.github
+media
+vite.config.js
+vite.config.ext.js
+pnpm-lock.yaml
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/eslint.config.mjs

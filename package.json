@@ -7,7 +7,7 @@
     "email": "rend42@163.com",
     "url": "https://github.com/42arch"
   },
-  "description": "Create, Edit and Preview Your GeoJSON Data With VSCode",
+  "description": "Create, Preview and Edit Your GeoJSON Data in VSCode",
   "private": true,
   "version": "1.0.3",
   "icon": "icon.png",
@@ -73,8 +73,7 @@
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
     "changeset": "changeset",
-    "version-pkg": "changeset version",
-    "tag": "changeset tag"
+    "version-pkg": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.12",
