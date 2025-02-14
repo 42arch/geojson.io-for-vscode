@@ -302,6 +302,8 @@ function MapContainer() {
 
     trashRef.current.onClick(() => {
       drawRef.current?.trash()
+
+      console.log('trash', geojson, latestGeojson.current)
     })
 
     mapRef.current.on('click', (e) => {
@@ -347,18 +349,18 @@ function MapContainer() {
   useEffect(() => {
     mapRef.current?.on('idle', () => {
       if (!mapRef.current?.getSource('map-data')) {
-        if (geojson) {
-          const [minLng, minLat, maxLng, maxLat] = bbox(geojson)
+        if (latestGeojson.current) {
+          const [minLng, minLat, maxLng, maxLat] = bbox(latestGeojson.current)
           mapRef.current?.fitBounds([minLng, minLat, maxLng, maxLat], {
             padding: 10
           })
-          addMapData(geojson)
+          addMapData(latestGeojson.current)
         }
       }
     })
 
     if (mapRef.current?.isStyleLoaded()) {
-      updateLayerData(geojson)
+      updateLayerData(latestGeojson.current)
     }
 
     mapRef.current?.on('draw.create', created)
