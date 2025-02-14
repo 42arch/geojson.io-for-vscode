@@ -9,7 +9,7 @@
   },
   "description": "Create, Preview and Edit Your GeoJSON Data in VSCode",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "icon": "icon.png",
   "repository": "https://github.com/42arch/geojson.io-for-vscode",
   "homepage": "https://github.com/42arch/geojson.io-for-vscode",
