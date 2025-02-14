@@ -26,7 +26,7 @@ export function activate(context: ExtensionContext) {
         if (editor) {
           const text = editor.document.getText()
 
-          if (isValidGeojsonText(text)) {
+          if (!text || isValidGeojsonText(text)) {
             ViewPanel.open(context)
             ViewPanel.postMessageToWebview(text)
           } else {
